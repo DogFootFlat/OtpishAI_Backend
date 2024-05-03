@@ -86,6 +86,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests((auth) -> auth
                         .requestMatchers("/refresh").permitAll()
+                        .requestMatchers("/product").permitAll()
                         .anyRequest().authenticated());
         //JWTFilter 및 Logout_Filter 추가
         http
