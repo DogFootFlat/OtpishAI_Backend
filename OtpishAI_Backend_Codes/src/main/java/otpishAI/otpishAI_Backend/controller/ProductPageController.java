@@ -39,6 +39,7 @@ public class ProductPageController {
         ArrayList<String> categoryList = new ArrayList<>(Arrays.asList(strArr));
 
         Page<Product> products = productService.productSelectByUri(genre, brandList, categoryList, pageable);
+
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }
