@@ -19,19 +19,22 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
     private final JPAQueryFactory jpaQueryFactory;
     private final QProduct qProduct = QProduct.product;
 
-    public Page<Product> listingProduct(String genre, List<Integer> brand, List<String> category, Pageable pageable){
+    public Page<Product> listingProduct(String genre, List<String> brand, List<String> category, Pageable pageable){
 
         //옷 분류로 찾기(0**0*0* *부분에 0 금지 ex : 0120102)
-        BooleanExpression whereClause = qProduct.genre_code.likeIgnoreCase("%" + genre + "%");
+        BooleanExpression whereClause = qProduct.genrecode.likeIgnoreCase("%" + genre + "%");
         
-        if(!(brand.get(0) == 0 && brand.isEmpty()))
+        if(!brand.isEmpty() &&!brand.get(0).equals(""))
         {
-            whereClause.and(brandPredicate(brand));
+            System.out.println("dddd");
+            whereClause = whereClause.and(brandPredicate(brand));
         }
-        if(!(category.get(0).equals("") && category.isEmpty())){
-            whereClause.and(categoryPredicate(category));
+        if(!category.isEmpty() && !category.get(0).equals("")){
+            System.out.println("aaaa");
+            whereClause = whereClause.and(categoryPredicate(category));
         }
 
+        System.out.println(whereClause);
         List<Product> results = jpaQueryFactory
                 .selectFrom(qProduct)
                 .where(whereClause)
@@ -44,16 +47,18 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
                 .where(whereClause)
                 .fetchCount();
 
+
         return new PageImpl<>(results, pageable, totalCount);
     }
     //브랜드 별 찾기
-    private BooleanExpression brandPredicate(List<Integer> brand) {
+    private BooleanExpression brandPredicate(List<String> brand) {
         BooleanExpression predicate = null;
-        for (Integer keyword : brand) {
+        for (String keyword : brand) {
 
-            BooleanExpression keywordPredicate = qProduct.product_brand.eq(keyword);
+            BooleanExpression keywordPredicate =qProduct.productbrand.likeIgnoreCase("%" + keyword + "%");
 
             predicate = (predicate == null) ? keywordPredicate : predicate.or(keywordPredicate);
+            System.out.println(predicate);
         }
 
 
@@ -63,9 +68,9 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
     private BooleanExpression categoryPredicate(List<String> category) {
         BooleanExpression predicate = null;
         for (String keyword : category) {
-            BooleanExpression keywordPredicate_1 = qProduct.category_1.contains(keyword);
-            BooleanExpression keywordPredicate_2 = qProduct.category_2.contains(keyword);
-            BooleanExpression keywordPredicate_3 = qProduct.category_3.contains(keyword);
+            BooleanExpression keywordPredicate_1 = qProduct.category1.likeIgnoreCase("%" + keyword + "%");
+            BooleanExpression keywordPredicate_2 = qProduct.category2.likeIgnoreCase("%" + keyword + "%");
+            BooleanExpression keywordPredicate_3 = qProduct.category3.likeIgnoreCase("%" + keyword + "%");
 
             BooleanExpression combinedPredicate = keywordPredicate_1.or(keywordPredicate_2).or(keywordPredicate_3);
 

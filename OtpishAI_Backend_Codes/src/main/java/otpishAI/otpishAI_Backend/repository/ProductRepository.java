@@ -7,7 +7,7 @@ import otpishAI.otpishAI_Backend.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    Page<Product> findAllOrderByPayment_NDesc(Pageable pageable);
+    Page<Product> findAllByOrderByPaymentDesc(Pageable pageable);
 
 
 }

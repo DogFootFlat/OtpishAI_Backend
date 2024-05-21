@@ -19,10 +19,10 @@ public class ProductService {
     private final CustomProductRepositoryImpl customProductRepository;
 
     public Page<Product> productSelectByPaymentN(Pageable pageable){
-            return  productRepository.findAllOrderByPayment_NDesc(pageable);
+            return  productRepository.findAllByOrderByPaymentDesc(pageable);
     }
 
-    public Page<Product> productSelectByUri(String genre, List<Integer> brand, List<String> category, Pageable pageable){
+    public Page<Product> productSelectByUri(String genre, List<String> brand, List<String> category, Pageable pageable){
 
         return customProductRepository.listingProduct(genre, brand, category, pageable);
     }

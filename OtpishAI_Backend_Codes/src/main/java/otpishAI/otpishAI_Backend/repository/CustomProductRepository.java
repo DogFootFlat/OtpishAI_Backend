@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CustomProductRepository{
 
-    public Page<Product> listingProduct(String genre, List<Integer> brand, List<String> category, Pageable pageable);
+    public Page<Product> listingProduct(String genre, List<String> brand, List<String> category, Pageable pageable);
 
 
 }

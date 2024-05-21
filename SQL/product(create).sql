@@ -1,15 +1,15 @@
 CREATE TABLE `product` (
-  `product_code` varchar(255) NOT NULL,
+  `product_code` varchar(255) DEFAULT NULL,
   `O_price` int DEFAULT NULL,
   `R_price` int DEFAULT NULL,
   `category_1` varchar(255) DEFAULT NULL,
   `category_2` varchar(255) DEFAULT NULL,
   `category_3` varchar(255) DEFAULT NULL,
-  `favorite_N` int DEFAULT NULL,
+  `favorite_N` int DEFAULT '0',
   `genre_code` varchar(255) DEFAULT NULL,
-  `is_deleted` int DEFAULT NULL,
+  `is_deleted` int DEFAULT '0',
   `judge` varchar(255) DEFAULT NULL,
-  `payment_N` int DEFAULT NULL,
+  `payment_N` int DEFAULT '0',
   `product_R_date` datetime(6) DEFAULT NULL,
   `product_img_0` varchar(255) DEFAULT NULL,
   `product_img_1` varchar(255) DEFAULT NULL,
@@ -18,7 +18,8 @@ CREATE TABLE `product` (
   `product_img_4` varchar(255) DEFAULT NULL,
   `product_img_5` varchar(255) DEFAULT NULL,
   `product_name` varchar(255) DEFAULT NULL,
-  `review_N` int DEFAULT NULL,
-  `product_brand` int DEFAULT NULL,
-  PRIMARY KEY (`product_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `review_N` int DEFAULT '0',
+  `product_brand` varchar(255) DEFAULT NULL,
+  `product_num` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`product_num`)
+) ENGINE=InnoDB AUTO_INCREMENT=541 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
