@@ -21,7 +21,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
 
     public Page<Product> listingProduct(String genre, List<String> brand, List<String> category, Pageable pageable){
 
-        //옷 분류로 찾기(0**0*0* *부분에 0 금지 ex : 0120102)
+        //옷 분류로 찾기(0**01**)
         BooleanExpression whereClause = qProduct.genrecode.likeIgnoreCase("%" + genre + "%");
         
         if(!brand.isEmpty() &&!brand.get(0).equals(""))

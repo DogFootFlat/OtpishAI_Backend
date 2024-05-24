@@ -38,7 +38,7 @@ public class ProductPageController {
 
         Page<Product> products = productService.productSelectByUri(genre, brandList, categoryList, pageable);
 
-        System.out.println(products.getTotalElements());
+        System.out.println(products);
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }

@@ -27,6 +27,16 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+
+        String servletReqUrl = request.getServletPath();
+
+        if(servletReqUrl.contains("product") || servletReqUrl.contains("refresh"))
+        {
+            response.setStatus(HttpServletResponse.SC_OK);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         //access 토큰 확인
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
