@@ -26,11 +26,9 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
         
         if(!brand.isEmpty() &&!brand.get(0).equals(""))
         {
-            System.out.println("dddd");
             whereClause = whereClause.and(brandPredicate(brand));
         }
         if(!category.isEmpty() && !category.get(0).equals("")){
-            System.out.println("aaaa");
             whereClause = whereClause.and(categoryPredicate(category));
         }
 
@@ -58,7 +56,6 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
             BooleanExpression keywordPredicate =qProduct.productbrand.likeIgnoreCase("%" + keyword + "%");
 
             predicate = (predicate == null) ? keywordPredicate : predicate.or(keywordPredicate);
-            System.out.println(predicate);
         }
 
 

@@ -50,14 +50,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         response.addCookie(cookieService.createCookie("access", access));
         response.addCookie(cookieService.createCookie("refresh", refresh));
 
-        //이미 추가 회원 정보 등록을 한 유저만 메인으로 이동
-        if(existData.getAddr() == null)
-        {
-            response.sendRedirect("http://localhost:3000/register");
-        }
-        else {
-            response.sendRedirect("http://localhost:3000/main");
-        }
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
 }
