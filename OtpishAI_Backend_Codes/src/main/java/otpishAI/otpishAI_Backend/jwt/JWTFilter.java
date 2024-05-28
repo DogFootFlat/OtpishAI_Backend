@@ -30,7 +30,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String servletReqUrl = request.getServletPath();
 
-        if(servletReqUrl.contains("product") || servletReqUrl.contains("refresh") || servletReqUrl.contains("signin"))
+        if(servletReqUrl.contains("product") || servletReqUrl.contains("refresh") || servletReqUrl.contains("signin") || servletReqUrl.contains("product_detail"))
         {
             response.setStatus(HttpServletResponse.SC_OK);
             filterChain.doFilter(request, response);

@@ -27,39 +27,45 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Integer> favorite = createNumber("favorite", Integer.class);
 
-    public final StringPath genrecode = createString("genrecode");
+    public final StringPath genreCode = createString("genreCode");
 
-    public final NumberPath<Integer> isdeleted = createNumber("isdeleted", Integer.class);
+    public final NumberPath<Integer> isDeleted = createNumber("isDeleted", Integer.class);
 
     public final StringPath judge = createString("judge");
 
-    public final NumberPath<Integer> oprice = createNumber("oprice", Integer.class);
+    public final NumberPath<Integer> oPrice = createNumber("oPrice", Integer.class);
 
     public final NumberPath<Integer> payment = createNumber("payment", Integer.class);
 
-    public final StringPath productbrand = createString("productbrand");
+    public final StringPath productBrand = createString("productBrand");
 
-    public final StringPath productcode = createString("productcode");
+    public final StringPath productCode = createString("productCode");
 
-    public final StringPath productimg0 = createString("productimg0");
+    public final NumberPath<Integer> productGender = createNumber("productGender", Integer.class);
 
-    public final StringPath productimg1 = createString("productimg1");
+    public final StringPath productImg0 = createString("productImg0");
 
-    public final StringPath productimg2 = createString("productimg2");
+    public final StringPath productImg1 = createString("productImg1");
 
-    public final StringPath productimg3 = createString("productimg3");
+    public final StringPath productImg2 = createString("productImg2");
 
-    public final StringPath productimg4 = createString("productimg4");
+    public final StringPath productImg3 = createString("productImg3");
 
-    public final StringPath productimg5 = createString("productimg5");
+    public final StringPath productImg4 = createString("productImg4");
 
-    public final StringPath productname = createString("productname");
+    public final StringPath productImg5 = createString("productImg5");
 
-    public final DateTimePath<java.util.Date> productrdate = createDateTime("productrdate", java.util.Date.class);
+    public final StringPath productName = createString("productName");
+
+    public final NumberPath<Integer> productNum = createNumber("productNum", Integer.class);
+
+    public final DateTimePath<java.util.Date> productRdate = createDateTime("productRdate", java.util.Date.class);
+
+    public final StringPath productRegistrant = createString("productRegistrant");
 
     public final NumberPath<Integer> review = createNumber("review", Integer.class);
 
-    public final NumberPath<Integer> rprice = createNumber("rprice", Integer.class);
+    public final NumberPath<Integer> rPrice = createNumber("rPrice", Integer.class);
 
     public QProduct(String variable) {
         super(Product.class, forVariable(variable));

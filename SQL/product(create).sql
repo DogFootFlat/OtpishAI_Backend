@@ -21,5 +21,7 @@ CREATE TABLE `product` (
   `review_N` int DEFAULT '0',
   `product_brand` varchar(255) DEFAULT NULL,
   `product_num` int NOT NULL AUTO_INCREMENT,
+  `product_registrant` varchar(255) DEFAULT NULL,
+  `product_gender` int DEFAULT NULL,
   PRIMARY KEY (`product_num`)
-) ENGINE=InnoDB AUTO_INCREMENT=541 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6391 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

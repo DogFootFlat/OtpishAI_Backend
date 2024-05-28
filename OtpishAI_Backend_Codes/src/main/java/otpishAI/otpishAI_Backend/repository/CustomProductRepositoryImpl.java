@@ -22,7 +22,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
     public Page<Product> listingProduct(String genre, List<String> brand, List<String> category, Pageable pageable){
 
         //옷 분류로 찾기(0**01**)
-        BooleanExpression whereClause = qProduct.genrecode.likeIgnoreCase("%" + genre + "%");
+        BooleanExpression whereClause = qProduct.genreCode.likeIgnoreCase("%" + genre + "%");
         
         if(!brand.isEmpty() &&!brand.get(0).equals(""))
         {
@@ -53,7 +53,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
         BooleanExpression predicate = null;
         for (String keyword : brand) {
 
-            BooleanExpression keywordPredicate =qProduct.productbrand.likeIgnoreCase("%" + keyword + "%");
+            BooleanExpression keywordPredicate =qProduct.productBrand.likeIgnoreCase("%" + keyword + "%");
 
             predicate = (predicate == null) ? keywordPredicate : predicate.or(keywordPredicate);
         }

@@ -85,10 +85,12 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeRequests((auth) -> auth
-                        .requestMatchers("/refresh").permitAll()
-                        .requestMatchers("/product").permitAll()
-                        .requestMatchers("/signin/*").permitAll()
+                        .requestMatchers("/refresh/**").permitAll()
+                        .requestMatchers("/product/**").permitAll()
+                        .requestMatchers("/signin/**").permitAll()
+                        .requestMatchers("/product_detail/**").permitAll()
                         .anyRequest().authenticated());
+
 
         //JWTFilter 및 Logout_Filter 추가
         http

@@ -50,7 +50,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         response.addCookie(cookieService.createCookie("access", access));
         response.addCookie(cookieService.createCookie("refresh", refresh));
 
-        response.setStatus(HttpServletResponse.SC_OK);
+        response.sendRedirect("http://localhost:3000/prod-list");
     }
 
 }
