@@ -50,7 +50,15 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         response.addCookie(cookieService.createCookie("access", access));
 
-        response.sendRedirect("http://localhost:3000/prod-list");
+        if(userRepository.findByUsername(jwtUtil.getUsername(access)).getPhone() == null || userRepository.findByUsername(jwtUtil.getUsername(access)).getPhone().isEmpty())
+        {
+            response.sendRedirect("http://localhost:3000/sign-up");
+        }
+        else {
+            response.sendRedirect("http://localhost:3000/prod-list");
+
+        }
+
     }
 
 }
