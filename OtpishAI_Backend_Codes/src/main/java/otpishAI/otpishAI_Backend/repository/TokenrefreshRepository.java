@@ -9,7 +9,9 @@ public interface TokenrefreshRepository extends JpaRepository<Tokenrefresh, Long
 
     Boolean existsByRefresh(String refresh);
 
+    Boolean existsByUsername(String username);
+
     @Transactional
     @Modifying(clearAutomatically = true)
-    void deleteByRefresh(String refresh);
+    void deleteByUsername(String username);
 }

@@ -40,6 +40,11 @@ public class JWTFilter extends OncePerRequestFilter {
         //access 토큰 확인
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
+        // 쿠키가 없는 경우
+        if (cookies == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
         for (Cookie cookie : cookies) {
 
             if (cookie.getName().equals("access")) {
@@ -50,7 +55,6 @@ public class JWTFilter extends OncePerRequestFilter {
         // 토큰이 없다면 다음 필터로 넘김
         if (accessToken == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            filterChain.doFilter(request, response);
             return;
         }
 

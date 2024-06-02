@@ -51,13 +51,18 @@ public class Logout_Filter extends GenericFilterBean {
             return;
         }
 
-        //리프레시 토큰 얻음
-        String refresh = null;
+        //엑세스 토큰 얻음
+        String access = null;
         Cookie[] cookies = request.getCookies();
+        // 쿠키가 없는 경우
+        if (cookies == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
         if(cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refresh")) {
-                    refresh = cookie.getValue();
+                if (cookie.getName().equals("access")) {
+                    access = cookie.getValue();
                 }
             }
         }
@@ -66,38 +71,37 @@ public class Logout_Filter extends GenericFilterBean {
             return;
         }
 
-        //리프레시 토큰 널값 확인
-        if (refresh == null) {
+        //엑세스 토큰 널값 확인
+        if (access == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        //리프레시 토큰 만료 확인
+        //엑세스 토큰 만료 확인
         try {
-            jwtUtil.isExpired(refresh);
+            jwtUtil.isExpired(access);
         } catch (ExpiredJwtException e) {
             //만료시 예외 처리
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            tokenrefreshRepository.deleteByUsername(jwtUtil.getUsername(jwtUtil.getUsername(access)));
+
+            Cookie deleteAccessTokenCookie = cookieService.deleteCookie("access");
+
+            response.addCookie(deleteAccessTokenCookie);
+
+            response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
-        // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
-        String category = jwtUtil.getCategory(refresh);
-        if (!category.equals("refresh")) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return;
-        }
-
-        //DB에 저장되어 있는지 확인
-        Boolean isExist = tokenrefreshRepository.existsByRefresh(refresh);
-        if (!isExist) {
+        // 토큰이 access인지 확인 (발급시 페이로드에 명시)
+        String category = jwtUtil.getCategory(access);
+        if (!category.equals("access")) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         //로그아웃 진행
         //리프레시 토큰 DB에서 삭제
-        tokenrefreshRepository.deleteByRefresh(refresh);
+        tokenrefreshRepository.deleteByUsername(jwtUtil.getUsername(jwtUtil.getUsername(access)));
 
         //리프레시 토큰 쿠키값 제거
         Cookie deleteRefreshTokenCookie = cookieService.deleteCookie("refresh");

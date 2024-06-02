@@ -5,6 +5,7 @@ import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationF
 import otpishAI.otpishAI_Backend.jwt.JWTFilter;
 import otpishAI.otpishAI_Backend.jwt.JWTUtil;
 import otpishAI.otpishAI_Backend.jwt.Logout_Filter;
+import otpishAI.otpishAI_Backend.oAuth2.FailureFilter;
 import otpishAI.otpishAI_Backend.oAuth2.SuccessHandler;
 import otpishAI.otpishAI_Backend.repository.TokenrefreshRepository;
 import otpishAI.otpishAI_Backend.service.CookieService;
@@ -32,6 +33,8 @@ public class SecurityConfig {
     private final OAuth2_UserService customOAuth2UserService;
 
     private final SuccessHandler customSuccessHandler;
+
+    private final FailureFilter failureFilter;
 
     private final TokenrefreshRepository tokenrefreshRepository;
 
@@ -66,7 +69,7 @@ public class SecurityConfig {
         http
                 .csrf((auth) -> auth.disable());
 
-        //From 로그인 방식 설정(비확성화)
+        //Form 로그인 방식 설정(비확성화)
         http
                 .formLogin((auth) -> auth.disable());
 
@@ -80,6 +83,7 @@ public class SecurityConfig {
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
+                        .failureHandler(failureFilter)
                 );
 
         //경로별 인가 작업

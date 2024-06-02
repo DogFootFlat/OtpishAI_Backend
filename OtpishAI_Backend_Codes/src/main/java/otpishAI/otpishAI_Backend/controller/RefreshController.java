@@ -48,11 +48,10 @@ public class RefreshController {
             String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
 
             //리프레시 토큰 저장 DB에 기존의 리프레시 토큰 삭제 후 새 리프레시 토큰 저장
-            tokenrefreshRepository.deleteByRefresh(refresh);
+            tokenrefreshRepository.deleteByUsername(username);
             cookieService.addRefreshEntity(username, newRefresh, 86400000L);
 
-            response.setHeader("access", newAccess);
-            response.addCookie(cookieService.createCookie("refresh", newRefresh));
+            response.addCookie(cookieService.createCookie("access", newAccess));
 
             return new ResponseEntity<>(HttpStatus.OK);
 

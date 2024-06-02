@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
 import otpishAI.otpishAI_Backend.entity.User;
 import otpishAI.otpishAI_Backend.jwt.JWTUtil;
+import otpishAI.otpishAI_Backend.repository.TokenrefreshRepository;
 import otpishAI.otpishAI_Backend.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final UserRepository userRepository;
     private final JWTUtil jwtUtil;
     private final CookieService cookieService;
+    private final TokenrefreshRepository tokenrefreshRepository;
 
     //로그인 성공시 실행
     @Override
@@ -43,12 +45,10 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         String access = jwtUtil.createJwt("access",  username, role, 600000L); //access 토큰의 지속 시간은 10분
         String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); //리프레시 토큰의 지속 시간은 24시간
 
+        tokenrefreshRepository.deleteByUsername(username);
         cookieService.addRefreshEntity(username, refresh, 86400000L);
 
-        User existData = userRepository.findByUsername(username);
-
         response.addCookie(cookieService.createCookie("access", access));
-        response.addCookie(cookieService.createCookie("refresh", refresh));
 
         response.sendRedirect("http://localhost:3000/prod-list");
     }
