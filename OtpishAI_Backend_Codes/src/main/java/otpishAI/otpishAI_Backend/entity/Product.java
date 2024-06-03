@@ -1,21 +1,20 @@
 package otpishAI.otpishAI_Backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 //상품 정보 엔티티
 @Entity
 @Getter
 @Setter
+@Table(name="product")
 public class Product {
 
     //품번
-    @Id
     @Column(name="product_code")
     private String productCode;
 
@@ -23,48 +22,41 @@ public class Product {
     @Column(name="product_name")
     private String productName;
 
-    @Column(name="product_img_0")
-    private String productImg0;
-    @Column(name="product_img_1")
-    private String productImg1;
-    @Column(name="product_img_2")
-    private String productImg2;
-    @Column(name="product_img_3")
-    private String productImg3;
-    @Column(name="product_img_4")
-    private String productImg4;
-    @Column(name="product_img_5")
-    private String productImg5;
+    @Type(value = StringArrayType.class)
+    @Column(name = "product_img", columnDefinition = "text[]")
+    private String[] productImg  = new String[0];
+
+
+    @Type(value = StringArrayType.class)
+    @Column(name = "product_info", columnDefinition = "text[]")
+    private String[] productInfo  = new String[0];
 
     //정가
-    @Column(name="O_price")
-    private Integer oPrice;
+    @Column(name="o_price")
+    private Long oPrice;
     //판매가
-    @Column(name="R_price")
-    private Integer rPrice;
+    @Column(name="r_price")
+    private Long rPrice;
 
-    @Column(name="category_1")
-    private String category1;
-    @Column(name="category_2")
-    private String category2;
-    @Column(name="category_3")
-    private String category3;
+    @Type(value = StringArrayType.class)
+    @Column(name = "category", columnDefinition = "text[]")
+    private String[] category = new String[0];
     //옷 분류(앞자리 3개로 대분류, 뒷자리 3개로 소분류)
     @Column(name="genre_code")
     private String genreCode;
 
     //결재 건수
-    @Column(name="payment_N")
-    private Integer payment;
+    @Column(name="payment_n")
+    private Long payment;
     //찜 횟수
-    @Column(name="favorite_N")
-    private Integer favorite;
+    @Column(name="favorite_n")
+    private Long favorite;
     //리뷰 수
-    @Column(name="review_N")
-    private Integer review;
+    @Column(name="review_n")
+    private Long review;
     //등록일
-    @Column(name="product_R_date")
-    private Date productRdate;
+    @Column(name="product_r_date")
+    private LocalDateTime productRdate;
 
     //상품 삭제 여부
     @Column(name="is_deleted")
@@ -79,8 +71,9 @@ public class Product {
 
     @Column(name="product_registrant")
     private String productRegistrant;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="product_num")
-    private Integer productNum;
+    private Long productNum;
 
 }

@@ -27,10 +27,10 @@ public class ProductPageController {
     private final ProductService productService;
 
     @GetMapping("/product")
-    public ResponseEntity<?> listingProduct(@RequestParam(defaultValue = "", name = "genre") String genre,
+    public ResponseEntity<Page<Product>> listingProduct(@RequestParam(defaultValue = "", name = "genre") String genre,
                                                       @RequestParam(defaultValue = "", name = "brand") String brandIds,
                                                       @RequestParam(defaultValue = "", name = "category") String category,
-                                                      @PageableDefault(page = 0, size = 30, sort = "payment", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                      @PageableDefault(page = 0, size = 30, sort = "payment_n", direction = Sort.Direction.DESC) Pageable pageable) {
 
         // 쉼표로 구분된 브랜드 ID 문자열을 문자열 리스트로 변환
         String[] brandArr = brandIds.split(",");
@@ -51,6 +51,8 @@ public class ProductPageController {
         List<ProductDetail> productDetails = productService.productDetailsByProductNum(productNum);
 
         ProductDTO productDTO = new ProductDTO(product, productDetails);
+
+        System.out.println(productDTO.getProductImg());
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 }

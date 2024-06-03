@@ -2,7 +2,7 @@ package otpishAI.otpishAI_Backend.controller;
 
 import lombok.AllArgsConstructor;
 import otpishAI.otpishAI_Backend.dto.UserDTO;
-import otpishAI.otpishAI_Backend.entity.User;
+import otpishAI.otpishAI_Backend.entity.Customers;
 import otpishAI.otpishAI_Backend.jwt.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,8 +46,8 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody User user) {
+    public void register(@RequestBody Customers customers) {
         //DB에 유저 정보 저장
-        userService.saveUser(user);
+        userService.saveUser(customers);
     }
 }

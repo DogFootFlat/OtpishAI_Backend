@@ -1,11 +1,11 @@
 package otpishAI.otpishAI_Backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Array;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Getter
@@ -18,21 +18,23 @@ public class ProductDetail {
     private String detailCode;
 
     @Column(name="product_num")
-    private Integer productNum;
+    private Long productNum;
 
-    @Column(name="product_color")
-    private String productColor;
+    @Column( name = "product_color")
+    @JdbcTypeCode(SqlTypes.VECTOR)
+    @Array(length = 3)
+    private float[] productColor;
 
     @Column(name="product_size")
     private String productSize;
 
     @Column(name="product_inven")
-    private Integer productInven;
+    private Long productInven;
 
-    @Column(name="O_price")
-    private Integer oPrice;
+    @Column(name="detail_o_price")
+    private Long oPrice;
 
-    @Column(name="R_price")
-    private Integer rPrice;
+    @Column(name="detail_r_price")
+    private Long rPrice;
 
 }

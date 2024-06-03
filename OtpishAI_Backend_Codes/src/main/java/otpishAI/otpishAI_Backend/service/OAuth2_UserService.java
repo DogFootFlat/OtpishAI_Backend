@@ -6,7 +6,7 @@ import otpishAI.otpishAI_Backend.dto.NaverResponse;
 import otpishAI.otpishAI_Backend.dto.OAuth2Response;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
 import otpishAI.otpishAI_Backend.dto.UserDTO;
-import otpishAI.otpishAI_Backend.entity.User;
+import otpishAI.otpishAI_Backend.entity.Customers;
 import otpishAI.otpishAI_Backend.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -40,17 +40,17 @@ public class OAuth2_UserService extends DefaultOAuth2UserService {
             return null;
         }
         String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
-        User existData = userRepository.findByUsername(username);
+        Customers existData = userRepository.findByUsername(username);
 
         if (existData == null) {
 
-            User user = new User();
-            user.setUsername(username);
-            user.setEmail(oAuth2Response.getEmail());
-            user.setName(oAuth2Response.getName());
-            user.setRole("ROLE_USER");
+            Customers customers = new Customers();
+            customers.setUsername(username);
+            customers.setEmail(oAuth2Response.getEmail());
+            customers.setName(oAuth2Response.getName());
+            customers.setRole("ROLE_USER");
 
-            userRepository.save(user);
+            userRepository.save(customers);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(username);

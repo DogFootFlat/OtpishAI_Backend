@@ -2,7 +2,6 @@ package otpishAI.otpishAI_Backend.oAuth2;
 
 import lombok.AllArgsConstructor;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
-import otpishAI.otpishAI_Backend.entity.User;
 import otpishAI.otpishAI_Backend.jwt.JWTUtil;
 import otpishAI.otpishAI_Backend.repository.TokenrefreshRepository;
 import otpishAI.otpishAI_Backend.repository.UserRepository;
