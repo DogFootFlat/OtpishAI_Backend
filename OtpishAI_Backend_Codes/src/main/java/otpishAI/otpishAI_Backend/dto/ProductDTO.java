@@ -21,6 +21,8 @@ public class ProductDTO {
 
     private String[] productImg;
 
+    private String[] productInfo;
+
     //정가
     private Long oPrice;
     //판매가
@@ -61,6 +63,7 @@ public class ProductDTO {
         productName = product.getProductName();
 
         productImg = product.getProductImg();
+        productInfo = product.getProductInfo();
 
         oPrice = product.getOPrice();
         rPrice = product.getRPrice();

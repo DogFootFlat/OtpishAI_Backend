@@ -52,7 +52,6 @@ public class ProductPageController {
 
         ProductDTO productDTO = new ProductDTO(product, productDetails);
 
-        System.out.println(productDTO.getProductImg());
         return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 }

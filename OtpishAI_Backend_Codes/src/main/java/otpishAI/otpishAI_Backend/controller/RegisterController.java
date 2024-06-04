@@ -28,10 +28,10 @@ public class RegisterController {
 
     @GetMapping("/register")
     public ResponseEntity<?> register(HttpServletRequest request, HttpServletResponse response){
+        String refresh =refreshTCheckService.RefreshTCheck(request, response);
 
-        if(refreshTCheckService.RefreshTCheck(request, response).getStatusCode() == HttpStatus.OK)
+        if(!refresh.equals(""))
         {
-            String refresh = refreshTCheckService.getRefreshT(request, response);
             //유저 정보 받아옴
             UserDTO user = userService.responseUser(jwtUtil.getUsername(refresh));
 

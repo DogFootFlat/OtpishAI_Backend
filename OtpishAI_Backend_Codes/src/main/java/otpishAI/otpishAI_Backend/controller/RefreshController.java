@@ -34,12 +34,10 @@ public class RefreshController {
     //refresh 요청을 수행하였을 때 리프레시 토큰 또한 만료되거나 유효하지 않다면 400에러 반환
     @PostMapping("/refresh")
     public ResponseEntity<?> refresh(HttpServletRequest request, HttpServletResponse response) {
-
+        String refresh = refreshTCheckService.RefreshTCheck(request, response);
         //리프레시 토큰 얻음
-        if(refreshTCheckService.RefreshTCheck(request, response).getStatusCode() == HttpStatus.OK)
+        if(!refresh.equals(""))
         {
-            String refresh = refreshTCheckService.getRefreshT(request, response);
-
             String username = jwtUtil.getUsername(refresh);
             String role = jwtUtil.getRole(refresh);
 
