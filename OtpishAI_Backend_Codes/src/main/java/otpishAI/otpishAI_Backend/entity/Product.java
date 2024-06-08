@@ -41,6 +41,7 @@ public class Product {
     @Type(value = StringArrayType.class)
     @Column(name = "category", columnDefinition = "text[]")
     private String[] category = new String[0];
+
     //옷 분류(앞자리 3개로 대분류, 뒷자리 3개로 소분류)
     @Column(name="genre_code")
     private String genreCode;

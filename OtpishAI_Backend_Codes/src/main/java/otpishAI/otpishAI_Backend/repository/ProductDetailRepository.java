@@ -6,7 +6,7 @@ import otpishAI.otpishAI_Backend.entity.ProductDetail;
 import java.util.List;
 
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, String> {
-    List<ProductDetail> findAllByProductNum(Integer productNum);
+    List<ProductDetail> findAllByProductNum(Long productNum);
 
 
 }

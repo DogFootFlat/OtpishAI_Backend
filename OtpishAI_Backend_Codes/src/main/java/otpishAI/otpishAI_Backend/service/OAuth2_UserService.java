@@ -5,9 +5,9 @@ import otpishAI.otpishAI_Backend.dto.GoogleResponse;
 import otpishAI.otpishAI_Backend.dto.NaverResponse;
 import otpishAI.otpishAI_Backend.dto.OAuth2Response;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
-import otpishAI.otpishAI_Backend.dto.UserDTO;
+import otpishAI.otpishAI_Backend.dto.OAuth2_CustomersDTO;
 import otpishAI.otpishAI_Backend.entity.Customers;
-import otpishAI.otpishAI_Backend.repository.UserRepository;
+import otpishAI.otpishAI_Backend.repository.CustomersRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class OAuth2_UserService extends DefaultOAuth2UserService {
 
-    private final UserRepository userRepository;
+    private final CustomersRepository customersRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -40,7 +40,7 @@ public class OAuth2_UserService extends DefaultOAuth2UserService {
             return null;
         }
         String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
-        Customers existData = userRepository.findByUsername(username);
+        Customers existData = customersRepository.findByUsername(username);
 
         if (existData == null) {
 
@@ -50,28 +50,28 @@ public class OAuth2_UserService extends DefaultOAuth2UserService {
             customers.setName(oAuth2Response.getName());
             customers.setRole("ROLE_USER");
 
-            userRepository.save(customers);
+            customersRepository.save(customers);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole("ROLE_USER");
+            OAuth2_CustomersDTO OAuth2CustomersDTO = new OAuth2_CustomersDTO();
+            OAuth2CustomersDTO.setUsername(username);
+            OAuth2CustomersDTO.setName(oAuth2Response.getName());
+            OAuth2CustomersDTO.setRole("ROLE_USER");
 
-            return new OAuth2_User(userDTO);
+            return new OAuth2_User(OAuth2CustomersDTO);
         }
         else {
 
             existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
 
-            userRepository.save(existData);
+            customersRepository.save(existData);
 
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(existData.getUsername());
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setRole(existData.getRole());
+            OAuth2_CustomersDTO OAuth2CustomersDTO = new OAuth2_CustomersDTO();
+            OAuth2CustomersDTO.setUsername(existData.getUsername());
+            OAuth2CustomersDTO.setName(oAuth2Response.getName());
+            OAuth2CustomersDTO.setRole(existData.getRole());
 
-            return new OAuth2_User(userDTO);
+            return new OAuth2_User(OAuth2CustomersDTO);
         }
 
 

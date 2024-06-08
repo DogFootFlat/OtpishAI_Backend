@@ -3,7 +3,7 @@ package otpishAI.otpishAI_Backend.jwt;
 import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
-import otpishAI.otpishAI_Backend.dto.UserDTO;
+import otpishAI.otpishAI_Backend.dto.OAuth2_CustomersDTO;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -83,12 +83,12 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(accessToken);
 
         //userDTO를 생성하여 값 set
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username);
-        userDTO.setRole(role);
+        OAuth2_CustomersDTO OAuth2CustomersDTO = new OAuth2_CustomersDTO();
+        OAuth2CustomersDTO.setUsername(username);
+        OAuth2CustomersDTO.setRole(role);
 
         //UserDetails에 회원 정보 객체 담기
-        OAuth2_User oAuth_2User = new OAuth2_User(userDTO);
+        OAuth2_User oAuth_2User = new OAuth2_User(OAuth2CustomersDTO);
 
         //스프링 시큐리티 인증 토큰 생성
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(oAuth_2User.getUsername(), null, oAuth_2User.getAuthorities());

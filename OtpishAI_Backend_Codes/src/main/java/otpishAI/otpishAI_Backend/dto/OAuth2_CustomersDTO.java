@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
+public class OAuth2_CustomersDTO {
 
     private String email;
 

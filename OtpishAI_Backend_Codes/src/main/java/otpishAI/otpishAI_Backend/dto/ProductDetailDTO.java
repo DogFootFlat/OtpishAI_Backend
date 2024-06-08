@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import otpishAI.otpishAI_Backend.entity.Product;
 import otpishAI.otpishAI_Backend.entity.ProductDetail;
+import otpishAI.otpishAI_Backend.entity.Review;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 //상품 정보 엔티티
 @Getter
 @Setter
-public class ProductDTO {
+public class ProductDetailDTO {
 
     //품번
     private String productCode;
@@ -56,7 +57,9 @@ public class ProductDTO {
 
     private List<ProductDetail> productDetails;
 
-    public ProductDTO(Product product, List<ProductDetail> productDetails){
+    private List<Review> reviews;
+
+    public ProductDetailDTO(Product product, List<ProductDetail> productDetails, List<Review> reviews){
         super();
         productCode = product.getProductCode();
 
@@ -93,5 +96,6 @@ public class ProductDTO {
         productNum = product.getProductNum();
 
         this.productDetails = productDetails;
+        this.reviews = reviews;
     }
 }

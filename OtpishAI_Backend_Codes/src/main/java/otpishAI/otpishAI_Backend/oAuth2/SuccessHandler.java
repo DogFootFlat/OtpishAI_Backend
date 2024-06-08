@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
 import otpishAI.otpishAI_Backend.jwt.JWTUtil;
 import otpishAI.otpishAI_Backend.repository.TokenrefreshRepository;
-import otpishAI.otpishAI_Backend.repository.UserRepository;
+import otpishAI.otpishAI_Backend.repository.CustomersRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +22,7 @@ import java.util.Iterator;
 @AllArgsConstructor
 public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final UserRepository userRepository;
+    private final CustomersRepository customersRepository;
     private final JWTUtil jwtUtil;
     private final CookieService cookieService;
     private final TokenrefreshRepository tokenrefreshRepository;
@@ -49,7 +49,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         response.addCookie(cookieService.createCookie("access", access));
 
-        if(userRepository.findByUsername(jwtUtil.getUsername(access)).getPhone() == null || userRepository.findByUsername(jwtUtil.getUsername(access)).getPhone().isEmpty())
+        if(customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone() == null || customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone().isEmpty())
         {
             response.sendRedirect("http://localhost:3000/sign-up");
         }

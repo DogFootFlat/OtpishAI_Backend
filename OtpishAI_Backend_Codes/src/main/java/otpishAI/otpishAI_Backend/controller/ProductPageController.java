@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import otpishAI.otpishAI_Backend.dto.ProductDTO;
+import otpishAI.otpishAI_Backend.dto.ProductDetailDTO;
 import otpishAI.otpishAI_Backend.entity.Product;
 import otpishAI.otpishAI_Backend.entity.ProductDetail;
+import otpishAI.otpishAI_Backend.entity.Review;
 import otpishAI.otpishAI_Backend.service.ProductService;
+import otpishAI.otpishAI_Backend.service.ReviewService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +28,7 @@ public class ProductPageController {
 
     private final ProductService productService;
 
+    private final ReviewService reviewService;
     @GetMapping("/product")
     public ResponseEntity<Page<Product>> listingProduct(@RequestParam(defaultValue = "", name = "genre") String genre,
                                                       @RequestParam(defaultValue = "", name = "brand") String brandIds,
@@ -45,13 +48,13 @@ public class ProductPageController {
     }
 
     @GetMapping("/product_detail/{productNum}")
-    public ResponseEntity<?> detailProduct(@PathVariable("productNum") Integer productNum){
+    public ResponseEntity<?> detailProduct(@PathVariable("productNum") Long productNum){
 
         Product product = productService.productSelectByProductNum(productNum);
         List<ProductDetail> productDetails = productService.productDetailsByProductNum(productNum);
+        List<Review> reviews = reviewService.reviewsByProductNum(productNum);
+        ProductDetailDTO productDetailDTO = new ProductDetailDTO(product, productDetails, reviews);
 
-        ProductDTO productDTO = new ProductDTO(product, productDetails);
-
-        return new ResponseEntity<>(productDTO, HttpStatus.OK);
+        return new ResponseEntity<>(productDetailDTO, HttpStatus.OK);
     }
 }

@@ -32,11 +32,11 @@ public class ProductService {
     }
 
 
-    public Product productSelectByProductNum(Integer productNum){
+    public Product productSelectByProductNum(Long productNum){
 
         return productRepository.findByProductNum(productNum);
     }
-    public List<ProductDetail> productDetailsByProductNum(Integer productNum){
+    public List<ProductDetail> productDetailsByProductNum(Long productNum){
         return  productDetailRepository.findAllByProductNum(productNum);
 
     }
