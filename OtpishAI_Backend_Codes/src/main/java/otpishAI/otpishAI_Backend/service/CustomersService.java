@@ -33,6 +33,7 @@ public class CustomersService {
         customer.setPhone(customers.getPhone());
         customer.setNickname(customers.getNickname());
         customer.setProfile_img(customers.getProfile_img());
+        customer.setPreferGenre(customers.getPreferGenre());
         customersRepository.save(customer);
     }
 }

@@ -1,7 +1,9 @@
 package otpishAI.otpishAI_Backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Array;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -10,6 +12,8 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="product_detail")
 public class ProductDetail {
 

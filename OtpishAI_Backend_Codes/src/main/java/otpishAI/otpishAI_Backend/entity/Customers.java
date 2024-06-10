@@ -1,9 +1,13 @@
 package otpishAI.otpishAI_Backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +16,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="customers")
 public class Customers {
 
@@ -30,8 +36,8 @@ public class Customers {
     private String profile_img;
     private Integer gender;
 
-    @Type(value = StringArrayType.class)
-    @Column(name = "prefer_genre", columnDefinition = "text[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "prefer_genre")
     private String[] preferGenre = new String[0];
 
     private Boolean is_suspended;

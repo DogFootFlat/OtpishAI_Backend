@@ -1,15 +1,21 @@
 package otpishAI.otpishAI_Backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="reviews")
 public class Review {
 
@@ -30,8 +36,8 @@ public class Review {
     @Column(name="review_content")
     private String reviewContent;
 
-    @Type(value = StringArrayType.class)
-    @Column(name = "review_img", columnDefinition = "text[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "review_img")
     private String[] reviewImg = new String[0];
 
     @Column(name="review_r_date")

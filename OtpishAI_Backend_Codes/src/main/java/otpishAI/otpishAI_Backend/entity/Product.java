@@ -1,9 +1,13 @@
 package otpishAI.otpishAI_Backend.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +15,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name="product")
 public class Product {
 
@@ -22,13 +28,14 @@ public class Product {
     @Column(name="product_name")
     private String productName;
 
-    @Type(value = StringArrayType.class)
-    @Column(name = "product_img", columnDefinition = "text[]")
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "product_img")
     private String[] productImg  = new String[0];
 
 
-    @Type(value = StringArrayType.class)
-    @Column(name = "product_info", columnDefinition = "text[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "product_info")
     private String[] productInfo  = new String[0];
 
     //정가
@@ -38,8 +45,8 @@ public class Product {
     @Column(name="r_price")
     private Long rPrice;
 
-    @Type(value = StringArrayType.class)
-    @Column(name = "category", columnDefinition = "text[]")
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "category")
     private String[] category = new String[0];
 
     //옷 분류(앞자리 3개로 대분류, 뒷자리 3개로 소분류)

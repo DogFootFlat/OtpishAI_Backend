@@ -1,6 +1,8 @@
 package otpishAI.otpishAI_Backend.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import otpishAI.otpishAI_Backend.entity.Customers;
 
@@ -8,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomersDTO {
 
     private String email;
@@ -43,6 +47,7 @@ public class CustomersDTO {
         phone = customers.getPhone();
         nickname = customers.getNickname();
         profile_img = customers.getProfile_img();
+        preferGenre = customers.getPreferGenre();
     }
 
 }
