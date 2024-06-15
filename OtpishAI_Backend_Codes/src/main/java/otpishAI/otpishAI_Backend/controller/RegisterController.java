@@ -48,7 +48,6 @@ public class RegisterController {
 
     @PostMapping("/register")
     public void register(@RequestBody CustomersDTO customers) {
-        System.out.println(customers.getPreferGenre()[0]);
         //DB에 유저 정보 저장
         customersService.saveUser(customers);
     }
