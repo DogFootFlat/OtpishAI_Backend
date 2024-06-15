@@ -10,6 +10,7 @@ import otpishAI.otpishAI_Backend.repository.CustomProductRepositoryImpl;
 import otpishAI.otpishAI_Backend.repository.ProductDetailRepository;
 import otpishAI.otpishAI_Backend.repository.ProductRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,7 +29,15 @@ public class ProductService {
 
     public Page<Product> productsSelectByUri(String genre, List<String> brand, List<String> category, Pageable pageable){
 
-        return customProductRepository.listingProduct(genre, brand, category, pageable);
+        return customProductRepository.listingProduct(genre, brand, category,"", "", "", pageable, false);
+    }
+
+    public Page<Product> productSearchtByKeyword(String genre, String keyword, Pageable pageable){
+        ArrayList<String> brandList = new ArrayList<>();
+        brandList.add(keyword);
+        ArrayList<String> categoryList = new ArrayList<>();
+        categoryList.add(keyword);
+        return customProductRepository.listingProduct(genre, brandList, categoryList,keyword, keyword, keyword, pageable, true);
     }
 
 

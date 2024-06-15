@@ -21,25 +21,51 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     private final EntityManager entityManager;
 
     @Override
-    public Page<Product> listingProduct(String genre, List<String> brand, List<String> category, Pageable pageable) {
+    public  Page<Product> listingProduct(String genre, List<String> brand, List<String> category, String productName,String productCode, String productRegistrant ,Pageable pageable, Boolean isSearch){
+        StringBuilder sqlBuilder = new StringBuilder();
+        StringBuilder sqlBuilderFTC = new StringBuilder();
+        String connector = "";
+        if(isSearch){
+            connector= " OR ";
+            sqlBuilder.append("SELECT * FROM otpishai_schema.product WHERE 1 = 2");
+            sqlBuilderFTC.append("SELECT COUNT(*) FROM otpishai_schema.product WHERE 1 = 2");
+        }
+        else{
+            connector = " AND ";
+            sqlBuilder.append("SELECT * FROM otpishai_schema.product WHERE 1 = 1");
+            sqlBuilderFTC.append("SELECT COUNT(*) FROM otpishai_schema.product WHERE 1 = 1");
+        }
 
         // 네이티브 쿼리 작성
-        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM otpishai_schema.product WHERE 1 = 1");
-        StringBuilder sqlBuilderFTC = new StringBuilder("SELECT COUNT(*) FROM otpishai_schema.product WHERE 1 = 1");
-
         if (!genre.equals("")) {
-            sqlBuilder.append(" AND ").append("genre_code LIKE '%").append(genre).append("%'");
-            sqlBuilderFTC.append(" AND ").append("genre_code LIKE '%").append(genre).append("%'");
+            sqlBuilder.append(connector).append("genre_code LIKE '%").append(genre).append("%'");
+            sqlBuilderFTC.append(connector).append("genre_code LIKE '%").append(genre).append("%'");
+        }
+
+        if (!productName.equals("")) {
+
+            sqlBuilder.append(connector).append("product_name LIKE '%").append(productName).append("%'");
+            sqlBuilderFTC.append(connector).append("product_name LIKE '%").append(productName).append("%'");
+        }
+
+        if (!productCode.equals("")) {
+            sqlBuilder.append(connector).append("product_code LIKE '%").append(productCode).append("%'");
+            sqlBuilderFTC.append(connector).append("product_code LIKE '%").append(productCode).append("%'");
+        }
+
+        if (!productRegistrant.equals("")) {
+            sqlBuilder.append(connector).append("product_registrant LIKE '%").append(productRegistrant).append("%'");
+            sqlBuilderFTC.append(connector).append("product_registrant LIKE '%").append(productRegistrant).append("%'");
         }
 
         if (!brand.isEmpty() && !brand.get(0).equals("")) {
-            sqlBuilder.append(" AND ").append("product_brand IN :brands");
-            sqlBuilderFTC.append(" AND ").append("product_brand IN :brands");
+            sqlBuilder.append(connector).append("product_brand IN :brands");
+            sqlBuilderFTC.append(connector).append("product_brand IN :brands");
         }
 
         if (!category.isEmpty() && !category.get(0).equals("")) {
-            sqlBuilder.append(" AND ").append("(");
-            sqlBuilderFTC.append(" AND ").append("(");
+            sqlBuilder.append(connector).append("(");
+            sqlBuilderFTC.append(connector).append("(");
             for (int i = 0; i < category.size(); i++) {
                 if (i > 0) {
                     sqlBuilder.append(" OR ");
@@ -51,8 +77,6 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
             sqlBuilder.append(")");
             sqlBuilderFTC.append(")");
         }
-
-
 
         // 정렬 조건 추가
         Sort sort = pageable.getSort();
@@ -66,9 +90,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 orderBy.append(order.getProperty()).append(" ").append(order.getDirection());
                 first = false;
             }
-
             sqlBuilder.append(orderBy);
-
         }
 
         Query nativeQuery = entityManager.createNativeQuery(sqlBuilder.toString(), Product.class);
