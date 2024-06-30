@@ -26,40 +26,38 @@ public class RefreshTCheckService {
     //올바른 리프레시 토큰이 존재한다면 200을, 없다면 400을 반환
     public String RefreshTCheck(HttpServletRequest request, HttpServletResponse response){
         String access = getAccessT(request, response);
-        String refresh = null;
         //리프레시 토큰 null 검증
-        if (access.equals("")) {
+        if (access.equals("") || access == null) {
             return "";
         }
-        Optional<Tokenrefresh> tokenrefresh = tokenrefreshRepository.findByUsername(jwtUtil.getUsername(access));
-        if(tokenrefresh.isPresent()){
-            try {
-                refresh = tokenrefresh.get().getRefresh();
-                jwtUtil.isExpired(refresh);
-            } catch (ExpiredJwtException e) {
-                //만료시 예외 처리
-                return  "";
-            }
-        }
 
-        return refresh;
+        Optional<Tokenrefresh> tokenrefreshOpt = tokenrefreshRepository.findByUsername(jwtUtil.getUsername(access));
+        if (tokenrefreshOpt.isPresent()) {
+            String refresh = tokenrefreshOpt.get().getRefresh();
+            try {
+                jwtUtil.isExpired(refresh);
+                return refresh;
+            } catch (ExpiredJwtException e) {
+                // 만료시 예외 처리
+                return "";
+            }
+        } else {
+            return "";
+        }
     }
     
     //리프레시 토큰 가져오는 함수
     public String getAccessT(HttpServletRequest request, HttpServletResponse response){
-        String access = null;
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
+        if (cookies == null || cookies.length == 0) {
             return "";
         }
-        else {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("access")) {
-                    access = cookie.getValue();
-                    return access;
-                }
+
+        for (Cookie cookie : cookies) {
+            if ("access".equals(cookie.getName())) {
+                return cookie.getValue();
             }
-            return "";
         }
+        return "";
     }
 }

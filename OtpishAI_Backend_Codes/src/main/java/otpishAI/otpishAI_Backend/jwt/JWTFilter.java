@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import otpishAI.otpishAI_Backend.repository.TokenrefreshRepository;
+import otpishAI.otpishAI_Backend.service.CookieService;
+import otpishAI.otpishAI_Backend.service.RefreshTCheckService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,6 +27,9 @@ import java.io.PrintWriter;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final RefreshTCheckService refreshTCheckService;
+    private final TokenrefreshRepository tokenrefreshRepository;
+    private final CookieService cookieService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -41,7 +47,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
         // 쿠키가 없는 경우
-        if (cookies == null) {
+        if (cookies == null || cookies.length == 0) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -59,14 +65,32 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
-        try {
-            jwtUtil.isExpired(accessToken);
-        } catch (ExpiredJwtException e) {
+        if (jwtUtil.isExpired(accessToken)) {
             PrintWriter writer = response.getWriter();
             writer.print("access token expired");
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            String refresh = refreshTCheckService.RefreshTCheck(request, response);
+
+            if (refresh.equals("")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            } else {
+                String username = jwtUtil.getUsername(refresh);
+                String role = jwtUtil.getRole(refresh);
+
+                // 새로운 JWT 토큰 발급
+                String newAccess = jwtUtil.createJwt("access", username, role, 600000L);
+                String newRefresh = jwtUtil.createJwt("refresh", username, role, 86400000L);
+
+                // 리프레시 토큰 저장 DB에 기존의 리프레시 토큰 삭제 후 새 리프레시 토큰 저장
+                tokenrefreshRepository.deleteByUsername(username);
+                cookieService.addRefreshEntity(username, newRefresh, 86400000L);
+
+                response.addCookie(cookieService.createCookie("access", newAccess));
+                response.setStatus(HttpServletResponse.SC_OK);
+                System.out.println("Refreshed");
+                return;
+            }
         }
 
         // 토큰이 access인지 확인 (발급시 페이로드에 명시)
@@ -78,6 +102,9 @@ public class JWTFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+
         //토큰에서 username과 role 획득
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);

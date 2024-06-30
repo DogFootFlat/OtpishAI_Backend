@@ -1,6 +1,5 @@
 package otpishAI.otpishAI_Backend.repository;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -8,74 +7,92 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import otpishAI.otpishAI_Backend.entity.Product;
-import otpishAI.otpishAI_Backend.entity.QProduct;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
-import java.util.List;
-@Repository
+import java.util.List;@Repository
 @AllArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
 
     private final EntityManager entityManager;
 
     @Override
-    public  Page<Product> listingProduct(String genre, List<String> brand, List<String> category, String productName,String productCode, String productRegistrant ,Pageable pageable, Boolean isSearch){
+    public Page<Product> listingProduct(String genre, List<String> brand, List<String> category, String productName, String productCode, String productRegistrant, Pageable pageable, Boolean isSearch) {
         StringBuilder sqlBuilder = new StringBuilder();
         StringBuilder sqlBuilderFTC = new StringBuilder();
-        String connector = "";
-        if(isSearch){
-            connector= " OR ";
-            sqlBuilder.append("SELECT * FROM otpishai_schema.product WHERE 1 = 2");
-            sqlBuilderFTC.append("SELECT COUNT(*) FROM otpishai_schema.product WHERE 1 = 2");
-        }
-        else{
-            connector = " AND ";
-            sqlBuilder.append("SELECT * FROM otpishai_schema.product WHERE 1 = 1");
-            sqlBuilderFTC.append("SELECT COUNT(*) FROM otpishai_schema.product WHERE 1 = 1");
-        }
 
-        // 네이티브 쿼리 작성
-        if (!genre.equals("")) {
-            sqlBuilder.append(connector).append("genre_code LIKE '%").append(genre).append("%'");
-            sqlBuilderFTC.append(connector).append("genre_code LIKE '%").append(genre).append("%'");
-        }
+        // 기본 SELECT 문
+        sqlBuilder.append("SELECT * FROM otpishai_schema.product WHERE 1 = 1");
+        sqlBuilderFTC.append("SELECT COUNT(*) FROM otpishai_schema.product WHERE 1 = 1");
+
+        sqlBuilder.append(" AND genre_code LIKE '%").append(genre).append("%'");
+        sqlBuilderFTC.append(" AND genre_code LIKE '%").append(genre).append("%'");
+
+
+        // 나머지 조건들을 OR 또는 AND로 묶기
+        StringBuilder otherConditions = new StringBuilder();
+        StringBuilder otherConditionsFTC = new StringBuilder();
+        String connector = isSearch ? " OR " : " AND ";
 
         if (!productName.equals("")) {
-
-            sqlBuilder.append(connector).append("product_name LIKE '%").append(productName).append("%'");
-            sqlBuilderFTC.append(connector).append("product_name LIKE '%").append(productName).append("%'");
+            if (otherConditions.length() > 0) {
+                otherConditions.append(connector);
+                otherConditionsFTC.append(connector);
+            }
+            otherConditions.append("product_name LIKE '%").append(productName).append("%'");
+            otherConditionsFTC.append("product_name LIKE '%").append(productName).append("%'");
         }
 
         if (!productCode.equals("")) {
-            sqlBuilder.append(connector).append("product_code LIKE '%").append(productCode).append("%'");
-            sqlBuilderFTC.append(connector).append("product_code LIKE '%").append(productCode).append("%'");
+            if (otherConditions.length() > 0) {
+                otherConditions.append(connector);
+                otherConditionsFTC.append(connector);
+            }
+            otherConditions.append("product_code LIKE '%").append(productCode).append("%'");
+            otherConditionsFTC.append("product_code LIKE '%").append(productCode).append("%'");
         }
 
         if (!productRegistrant.equals("")) {
-            sqlBuilder.append(connector).append("product_registrant LIKE '%").append(productRegistrant).append("%'");
-            sqlBuilderFTC.append(connector).append("product_registrant LIKE '%").append(productRegistrant).append("%'");
+            if (otherConditions.length() > 0) {
+                otherConditions.append(connector);
+                otherConditionsFTC.append(connector);
+            }
+            otherConditions.append("product_registrant LIKE '%").append(productRegistrant).append("%'");
+            otherConditionsFTC.append("product_registrant LIKE '%").append(productRegistrant).append("%'");
         }
 
         if (!brand.isEmpty() && !brand.get(0).equals("")) {
-            sqlBuilder.append(connector).append("product_brand IN :brands");
-            sqlBuilderFTC.append(connector).append("product_brand IN :brands");
+            if (otherConditions.length() > 0) {
+                otherConditions.append(connector);
+                otherConditionsFTC.append(connector);
+            }
+            otherConditions.append("product_brand IN :brands");
+            otherConditionsFTC.append("product_brand IN :brands");
         }
 
         if (!category.isEmpty() && !category.get(0).equals("")) {
-            sqlBuilder.append(connector).append("(");
-            sqlBuilderFTC.append(connector).append("(");
+            if (otherConditions.length() > 0) {
+                otherConditions.append(connector);
+                otherConditionsFTC.append(connector);
+            }
             for (int i = 0; i < category.size(); i++) {
                 if (i > 0) {
-                    sqlBuilder.append(" OR ");
-                    sqlBuilderFTC.append(" OR ");
+                    otherConditions.append(" OR ");
+                    otherConditionsFTC.append(" OR ");
                 }
-                sqlBuilder.append("'").append(category.get(i)).append("' = ANY(category)");
-                sqlBuilderFTC.append("'").append(category.get(i)).append("' = ANY(category)");
+                otherConditions.append("array_to_string(category, ',') LIKE '%").append(category.get(i)).append("%'");
+                otherConditionsFTC.append("array_to_string(category, ',') LIKE '%").append(category.get(i)).append("%'");
             }
-            sqlBuilder.append(")");
-            sqlBuilderFTC.append(")");
+        }
+
+        // isSearch가 true이면 다른 조건들을 OR로 묶어야 하므로 괄호로 묶기
+        if (isSearch && otherConditions.length() > 0) {
+            sqlBuilder.append(" AND (").append(otherConditions).append(")");
+            sqlBuilderFTC.append(" AND (").append(otherConditionsFTC).append(")");
+        } else if (otherConditions.length() > 0) {
+            sqlBuilder.append(" AND ").append(otherConditions);
+            sqlBuilderFTC.append(" AND ").append(otherConditionsFTC);
         }
 
         // 정렬 조건 추가
@@ -94,13 +111,14 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         }
 
         Query nativeQuery = entityManager.createNativeQuery(sqlBuilder.toString(), Product.class);
-
         Query countQuery = entityManager.createNativeQuery(sqlBuilderFTC.toString());
+
         // 브랜드 파라미터 설정
         if (!brand.isEmpty() && !brand.get(0).equals("")) {
             nativeQuery.setParameter("brands", brand);
             countQuery.setParameter("brands", brand);
         }
+
         System.out.println(sqlBuilder);
         Long totalCount = ((Number) countQuery.getSingleResult()).longValue();
 

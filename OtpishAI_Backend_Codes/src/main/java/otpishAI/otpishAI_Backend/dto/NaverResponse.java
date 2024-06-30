@@ -1,6 +1,5 @@
 package otpishAI.otpishAI_Backend.dto;
 
-import lombok.AllArgsConstructor;
 
 import java.util.Map;
 

@@ -1,15 +1,15 @@
 package otpishAI.otpishAI_Backend.dto;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
-import otpishAI.otpishAI_Backend.entity.StringArrayType;
-
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReviewDTO {
 
     private Long reviewNum;

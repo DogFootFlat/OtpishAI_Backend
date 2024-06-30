@@ -20,6 +20,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import otpishAI.otpishAI_Backend.service.RefreshTCheckService;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +42,8 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
 
     private final CookieService cookieService;
+
+    private final RefreshTCheckService refreshTCheckService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -98,7 +101,7 @@ public class SecurityConfig {
 
         //JWTFilter 및 Logout_Filter 추가
         http
-                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class)
+                .addFilterAfter(new JWTFilter(jwtUtil, refreshTCheckService, tokenrefreshRepository, cookieService), OAuth2LoginAuthenticationFilter.class)
                 .addFilterBefore(new Logout_Filter(jwtUtil, tokenrefreshRepository, cookieService), LogoutFilter.class);
         //세션 설정(세션 유지 x)
         http

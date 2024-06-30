@@ -49,8 +49,11 @@ public class RegisterController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody CustomersDTO customers) {
         //DB에 유저 정보 저장
-        customersService.saveUser(customers);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(customersService.saveUser(customers)){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

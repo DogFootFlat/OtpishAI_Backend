@@ -55,8 +55,8 @@ public class Logout_Filter extends GenericFilterBean {
         String access = null;
         Cookie[] cookies = request.getCookies();
         // 쿠키가 없는 경우
-        if (cookies == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        if (cookies == null || cookies.length == 0) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         if(cookies != null) {
