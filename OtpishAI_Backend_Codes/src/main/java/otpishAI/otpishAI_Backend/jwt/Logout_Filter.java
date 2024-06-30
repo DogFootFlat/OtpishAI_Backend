@@ -78,9 +78,7 @@ public class Logout_Filter extends GenericFilterBean {
         }
 
         //엑세스 토큰 만료 확인
-        try {
-            jwtUtil.isExpired(access);
-        } catch (ExpiredJwtException e) {
+        if(jwtUtil.isExpired(access)){
             //만료시 예외 처리
             tokenrefreshRepository.deleteByUsername(jwtUtil.getUsername(jwtUtil.getUsername(access)));
 

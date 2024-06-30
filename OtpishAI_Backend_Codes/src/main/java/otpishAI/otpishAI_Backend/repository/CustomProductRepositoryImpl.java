@@ -11,7 +11,8 @@ import otpishAI.otpishAI_Backend.entity.Product;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
-import java.util.List;@Repository
+import java.util.List;
+@Repository
 @AllArgsConstructor
 public class CustomProductRepositoryImpl implements CustomProductRepository {
 
@@ -28,7 +29,6 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
         sqlBuilder.append(" AND genre_code LIKE '%").append(genre).append("%'");
         sqlBuilderFTC.append(" AND genre_code LIKE '%").append(genre).append("%'");
-
 
         // 나머지 조건들을 OR 또는 AND로 묶기
         StringBuilder otherConditions = new StringBuilder();
@@ -67,8 +67,18 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 otherConditions.append(connector);
                 otherConditionsFTC.append(connector);
             }
-            otherConditions.append("product_brand IN :brands");
-            otherConditionsFTC.append("product_brand IN :brands");
+            otherConditions.append("(");
+            otherConditionsFTC.append("(");
+            for (int i = 0; i < brand.size(); i++) {
+                if (i > 0) {
+                    otherConditions.append(" OR ");
+                    otherConditionsFTC.append(" OR ");
+                }
+                otherConditions.append("product_brand LIKE '%").append(brand.get(i)).append("%'");
+                otherConditionsFTC.append("product_brand LIKE '%").append(brand.get(i)).append("%'");
+            }
+            otherConditions.append(")");
+            otherConditionsFTC.append(")");
         }
 
         if (!category.isEmpty() && !category.get(0).equals("")) {
@@ -76,6 +86,8 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 otherConditions.append(connector);
                 otherConditionsFTC.append(connector);
             }
+            otherConditions.append("(");
+            otherConditionsFTC.append("(");
             for (int i = 0; i < category.size(); i++) {
                 if (i > 0) {
                     otherConditions.append(" OR ");
@@ -84,6 +96,8 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                 otherConditions.append("array_to_string(category, ',') LIKE '%").append(category.get(i)).append("%'");
                 otherConditionsFTC.append("array_to_string(category, ',') LIKE '%").append(category.get(i)).append("%'");
             }
+            otherConditions.append(")");
+            otherConditionsFTC.append(")");
         }
 
         // isSearch가 true이면 다른 조건들을 OR로 묶어야 하므로 괄호로 묶기
@@ -112,12 +126,6 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
         Query nativeQuery = entityManager.createNativeQuery(sqlBuilder.toString(), Product.class);
         Query countQuery = entityManager.createNativeQuery(sqlBuilderFTC.toString());
-
-        // 브랜드 파라미터 설정
-        if (!brand.isEmpty() && !brand.get(0).equals("")) {
-            nativeQuery.setParameter("brands", brand);
-            countQuery.setParameter("brands", brand);
-        }
 
         System.out.println(sqlBuilder);
         Long totalCount = ((Number) countQuery.getSingleResult()).longValue();
