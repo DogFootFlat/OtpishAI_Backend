@@ -73,5 +73,26 @@ public class ReviewController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+    @PutMapping("/review/{reviewNum}")
+    public ResponseEntity<?> updateReview(@PathVariable("reviewNum") Long reviewNum, @RequestBody ReviewDTO reviewDTO, HttpServletRequest request, HttpServletResponse response)
+    {
+        String access = refreshTCheckService.getAccessT(request, response);
+
+        String username = jwtUtil.getUsername(access);
+
+        String email = customersService.responseUser(username).getEmail();
+        if(reviewService.reviewOwnerCheck(reviewNum, email)){
+            if(reviewService.updateReview(reviewDTO, email, reviewNum)){
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+        else{
+            System.out.println("Invalid Email");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

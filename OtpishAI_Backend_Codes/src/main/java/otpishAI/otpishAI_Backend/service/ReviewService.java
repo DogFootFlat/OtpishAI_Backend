@@ -22,14 +22,24 @@ public class ReviewService {
 
     public Boolean saveReview(ReviewDTO reviewDTO, String email){
         try {
-            Review review = new Review();
-            review.setProductNum(reviewDTO.getProductNum());
-            review.setReviewImg(reviewDTO.getReviewImg());
+            Review review;
+            review = setReview(reviewDTO);
             review.setReviewOwner(email);
-            review.setReviewTitle(reviewDTO.getReviewTitle());
-            review.setReviewContent(reviewDTO.getReviewContent());
-            review.setReviewRdate(LocalDateTime.now());
 
+            reviewRepository.save(review);
+            return true;
+        } catch (DataAccessException e) {
+            System.out.println("Error Log : " + e);
+            return false;
+        }
+    }
+
+    public Boolean updateReview(ReviewDTO reviewDTO, String email, Long reviewNum){
+        try {
+            Review review;
+            review = setReview(reviewDTO);
+            review.setReviewNum(reviewNum);
+            review.setReviewOwner(email);
             reviewRepository.save(review);
             return true;
         } catch (DataAccessException e) {
@@ -63,4 +73,12 @@ public class ReviewService {
 
     }
 
+    private Review setReview(ReviewDTO reviewDTO){
+        Review review = new Review();
+        review.setReviewImg(reviewDTO.getReviewImg());
+        review.setReviewTitle(reviewDTO.getReviewTitle());
+        review.setReviewContent(reviewDTO.getReviewContent());
+        review.setReviewRdate(LocalDateTime.now());
+        return review;
+    }
 }
