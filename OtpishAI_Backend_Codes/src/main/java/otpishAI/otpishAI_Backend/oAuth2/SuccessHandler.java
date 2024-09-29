@@ -1,5 +1,6 @@
 package otpishAI.otpishAI_Backend.oAuth2;
 
+import jakarta.servlet.http.Cookie;
 import lombok.AllArgsConstructor;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
 import otpishAI.otpishAI_Backend.jwt.JWTUtil;
@@ -47,14 +48,19 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         tokenrefreshRepository.deleteByUsername(username);
         cookieService.addRefreshEntity(username, refresh, 86400000L);
 
-        response.addCookie(cookieService.createCookie("access", access));
+        Cookie accessCookie = cookieService.createCookie("access", access);
 
+        String cookieHeader = accessCookie.getName() + "=" + accessCookie.getValue() + "; Path=" + accessCookie.getPath() + "; HttpOnly; Secure; SameSite=None";
+        response.setHeader("Set-Cookie", cookieHeader);
+
+        System.out.println(access);
+        System.out.println("logged in");
         if(customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone() == null || customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone().isEmpty())
         {
-            response.sendRedirect("http://localhost:3000/sign-up");
+            response.sendRedirect("https://www.otpishai.shop/sign-up");
         }
         else {
-            response.sendRedirect("http://localhost:3000/prod-list");
+            response.sendRedirect("https://www.otpishai.shop/prod-list");
 
         }
 

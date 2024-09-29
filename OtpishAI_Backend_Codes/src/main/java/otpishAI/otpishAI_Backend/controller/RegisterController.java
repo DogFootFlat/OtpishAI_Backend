@@ -41,7 +41,7 @@ public class RegisterController {
         }
         else
         {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
     }

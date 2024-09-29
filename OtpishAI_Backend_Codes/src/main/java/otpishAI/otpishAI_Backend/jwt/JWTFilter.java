@@ -36,18 +36,22 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String servletReqUrl = request.getServletPath();
 
-        if(servletReqUrl.contains("product") || servletReqUrl.contains("refresh") || servletReqUrl.contains("signin") || servletReqUrl.contains("product_detail"))
+        if(servletReqUrl.contains("product") || servletReqUrl.contains("refresh") || servletReqUrl.contains("signin") || servletReqUrl.contains("product_detail") || servletReqUrl.contains("healthCheck") )
         {
             response.setStatus(HttpServletResponse.SC_OK);
             filterChain.doFilter(request, response);
             return;
         }
-
+        System.out.println(request.getCookies());
+        System.out.println(request.getHeaderNames());
+        System.out.println(request.getRequestURI());
+        System.out.println(request);
         //access 토큰 확인
         String accessToken = null;
         Cookie[] cookies = request.getCookies();
         // 쿠키가 없는 경우
         if (cookies == null || cookies.length == 0) {
+            System.out.println("No cookie");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
@@ -60,9 +64,23 @@ public class JWTFilter extends OncePerRequestFilter {
         }
         // 토큰이 없다면 다음 필터로 넘김
         if (accessToken == null) {
+            System.out.println("No token");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
+
+
+        // 토큰이 access인지 확인 (발급시 페이로드에 명시)
+        String category = jwtUtil.getCategory(accessToken);
+        if (!category.equals("access")) {
+            PrintWriter writer = response.getWriter();
+            writer.print("invalid access token");
+
+            System.out.println("not access");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
 
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
         if (jwtUtil.isExpired(accessToken)) {
@@ -72,6 +90,7 @@ public class JWTFilter extends OncePerRequestFilter {
             String refresh = refreshTCheckService.RefreshTCheck(request, response);
 
             if (refresh.equals("")) {
+                System.out.println("No refresh");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             } else {
@@ -87,23 +106,11 @@ public class JWTFilter extends OncePerRequestFilter {
                 cookieService.addRefreshEntity(username, newRefresh, 86400000L);
 
                 response.addCookie(cookieService.createCookie("access", newAccess));
-                response.setStatus(HttpServletResponse.SC_OK);
                 System.out.println("Refreshed");
-                return;
+                accessToken = newAccess;
             }
         }
 
-        // 토큰이 access인지 확인 (발급시 페이로드에 명시)
-        String category = jwtUtil.getCategory(accessToken);
-        if (!category.equals("access")) {
-            PrintWriter writer = response.getWriter();
-            writer.print("invalid access token");
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        response.setStatus(HttpServletResponse.SC_OK);
 
         //토큰에서 username과 role 획득
         String username = jwtUtil.getUsername(accessToken);
@@ -122,6 +129,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
+        response.setStatus(HttpServletResponse.SC_OK);
         filterChain.doFilter(request, response);
     }
 

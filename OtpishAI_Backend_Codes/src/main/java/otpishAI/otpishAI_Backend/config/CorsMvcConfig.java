@@ -15,9 +15,9 @@ public class CorsMvcConfig implements WebMvcConfigurer {
         corsRegistry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedMethods("GET", "POST", "DELETE", "PUT")
-                .allowedHeaders("access", "refresh", "Set-Cookie")
+                .allowedHeaders("JSESSIONID", "access", "refresh", "Set-Cookie", "Content-Type")
                 .exposedHeaders("access", "refresh", "Set-Cookie")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("https://www.otpishai.shop", "https://otpishai.shop", "https://back.otpishai.shop")
                 .maxAge(3600L);
     }
 }

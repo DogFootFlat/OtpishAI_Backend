@@ -8,5 +8,7 @@ import java.util.List;
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, String> {
     List<ProductDetail> findAllByProductNum(Long productNum);
 
+    ProductDetail findByDetailCode(String detailCode);
+
 
 }

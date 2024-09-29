@@ -49,4 +49,8 @@ public class ProductService {
         return  productDetailRepository.findAllByProductNum(productNum);
 
     }
+
+    public ProductDetail productDetailByDetailCode(String detailCode){
+        return productDetailRepository.findByDetailCode(detailCode);
+    }
 }

@@ -11,11 +11,12 @@ public class SigninController {
 
     @GetMapping("/signin/{signinType}")
     public ResponseEntity<?> signinNaver(@PathVariable("signinType") String signinType){
+        System.out.println("Good");
         if(signinType.equals("naver")) {
-            return new ResponseEntity<>("http://localhost:8080/oauth2/authorization/naver", HttpStatus.OK);
+            return new ResponseEntity<>("https://back.otpishai.shop/oauth2/authorization/naver", HttpStatus.OK);
         }
         else if(signinType.equals("google")) {
-            return new ResponseEntity<>("http://localhost:8080/oauth2/authorization/google", HttpStatus.OK);
+            return new ResponseEntity<>("https://back.otpishai.shop/oauth2/authorization/google", HttpStatus.OK);
         }
         else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

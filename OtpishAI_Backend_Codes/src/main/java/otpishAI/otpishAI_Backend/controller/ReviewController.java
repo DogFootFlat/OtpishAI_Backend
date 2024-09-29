@@ -44,7 +44,7 @@ public class ReviewController {
         String email = customersService.responseUser(username).getEmail();
         if(reviewService.saveReview(reviewDTO, email))
         {
-            System.out.println("Review Add Seuccess");
+            System.out.println("Review Add Success");
             return new ResponseEntity<>(HttpStatus.OK);
         }
         else{

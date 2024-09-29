@@ -57,7 +57,7 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                        configuration.setAllowedOriginPatterns(Arrays.asList("https://www.otpishai.shop", "https://back.otpishai.shop", "http://otpishai.shop"));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("JSESSIONID", "access", "refresh", "Set-Cookie", "Content-Type"));
@@ -96,6 +96,7 @@ public class SecurityConfig {
                         .requestMatchers("/product/**").permitAll()
                         .requestMatchers("/signin/**").permitAll()
                         .requestMatchers("/product_detail/**").permitAll()
+                        .requestMatchers("/healthCheck").permitAll()
                         .anyRequest().authenticated());
 
 
