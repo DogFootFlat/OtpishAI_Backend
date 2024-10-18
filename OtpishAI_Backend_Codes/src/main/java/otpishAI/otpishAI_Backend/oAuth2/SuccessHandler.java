@@ -57,10 +57,10 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         System.out.println("logged in");
         if(customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone() == null || customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone().isEmpty())
         {
-            response.sendRedirect("https://www.otpishai.shop/sign-up");
+            response.sendRedirect("https://otpishai.shop/sign-up");
         }
         else {
-            response.sendRedirect("https://www.otpishai.shop/prod-list");
+            response.sendRedirect("https://otpishai.shop/products");
 
         }
 

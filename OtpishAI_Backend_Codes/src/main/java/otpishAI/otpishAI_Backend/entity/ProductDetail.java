@@ -41,4 +41,7 @@ public class ProductDetail {
     @Column(name="detail_r_price")
     private Long rPrice;
 
+    @Column(name="product_code")
+    private String productCode;
+
 }

@@ -69,7 +69,7 @@ public class Product {
     //상품 삭제 여부
     @Column(name="is_deleted")
     private Integer isDeleted;
-    private String judge;
+    private Long judge;
     @Column(name="product_brand")
     private String productBrand;
 

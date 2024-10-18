@@ -53,4 +53,10 @@ public class ProductService {
     public ProductDetail productDetailByDetailCode(String detailCode){
         return productDetailRepository.findByDetailCode(detailCode);
     }
+
+    public ProductDetail productDetailByCode(String productCode){
+        return productDetailRepository.findFirstByProductCode(productCode);
+    }
+
+
 }

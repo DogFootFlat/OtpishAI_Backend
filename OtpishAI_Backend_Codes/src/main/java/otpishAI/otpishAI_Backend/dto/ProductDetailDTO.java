@@ -48,7 +48,7 @@ public class ProductDetailDTO {
 
     //상품 삭제 여부
     private Integer isDeleted;
-    private String judge;
+    private Long judge;
     private String productBrand;
 
     //상품의 대상 성별(1:유니섹스 2:여성 3:남성)
@@ -57,7 +57,6 @@ public class ProductDetailDTO {
     private String productRegistrant;
 
     private Long productNum;
-
 
     private List<ProductDetail> productDetails;
 

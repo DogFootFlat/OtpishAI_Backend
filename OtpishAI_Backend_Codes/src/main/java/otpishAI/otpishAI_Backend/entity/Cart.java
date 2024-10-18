@@ -33,4 +33,7 @@ public class Cart {
     @Column(name="cart_quantity")
     private Long quantity;
 
+    @Column(name="product_code")
+    private String productCode;
+
 }

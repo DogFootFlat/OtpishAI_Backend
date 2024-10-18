@@ -57,7 +57,7 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOriginPatterns(Arrays.asList("https://www.otpishai.shop", "https://back.otpishai.shop", "http://otpishai.shop"));
+                        configuration.setAllowedOriginPatterns(Arrays.asList("https://www.otpishai.shop", "https://back.otpishai.shop", "https://otpishai.shop"));
                         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedHeaders(Arrays.asList("JSESSIONID", "access", "refresh", "Set-Cookie", "Content-Type"));
