@@ -8,6 +8,8 @@ import otpishAI.otpishAI_Backend.dto.OAuth2_CustomersDTO;
 import otpishAI.otpishAI_Backend.entity.Customers;
 import otpishAI.otpishAI_Backend.repository.CustomersRepository;
 
+import java.time.LocalDateTime;
+
 @Service
 @AllArgsConstructor
 public class CustomersService {
@@ -37,6 +39,7 @@ public class CustomersService {
             customer.setNickname(customers.getNickname());
             customer.setProfile_img(customers.getProfile_img());
             customer.setPreferGenre(customers.getPreferGenre());
+            customer.setRegisterDate(LocalDateTime.now());
             customersRepository.save(customer);
 
             return true;

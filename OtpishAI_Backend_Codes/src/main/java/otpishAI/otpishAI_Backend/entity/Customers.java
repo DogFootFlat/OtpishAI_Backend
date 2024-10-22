@@ -44,5 +44,7 @@ public class Customers {
     private Boolean is_secessioned;
     private Long age;
 
+    @Column(name="register_date")
+    private LocalDateTime registerDate;
 
 }

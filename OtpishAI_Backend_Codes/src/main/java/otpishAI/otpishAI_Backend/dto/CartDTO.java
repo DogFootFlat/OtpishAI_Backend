@@ -1,6 +1,5 @@
 package otpishAI.otpishAI_Backend.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +22,12 @@ public class CartDTO {
 
     private Long rPrice;
 
+    private Long totalPrice;
+
+    private String productCode;
+
+    private Long productNum;
+
     private int quantity;
 
     public CartDTO (Cart cart){
@@ -35,6 +40,9 @@ public class CartDTO {
         oPrice = cart.getOPrice();
         rPrice = cart.getRPrice();
         quantity = cart.getQuantity().intValue();
+        productCode = cart.getProductCode();
+        totalPrice = cart.getTotalPrice();
+        productNum = cart.getProductNum();
 
     }
 

@@ -55,7 +55,7 @@ public class SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         System.out.println(access);
         System.out.println("logged in");
-        if(customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone() == null || customersRepository.findByUsername(jwtUtil.getUsername(access)).getPhone().isEmpty())
+        if(customersRepository.findByUsername(jwtUtil.getUsername(access)).getRegisterDate() == null)
         {
             response.sendRedirect("https://otpishai.shop/sign-up");
         }

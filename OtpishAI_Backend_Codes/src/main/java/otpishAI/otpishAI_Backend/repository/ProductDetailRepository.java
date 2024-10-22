@@ -10,7 +10,11 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, St
 
     ProductDetail findByDetailCode(String detailCode);
 
+    ProductDetail findFirstByProductNum(Long productNum);
+
     ProductDetail findFirstByProductCode(String productCode);
+
+    List<ProductDetail> findAllByDetailCodeIn(String[] detailCodes);
 
 
 }

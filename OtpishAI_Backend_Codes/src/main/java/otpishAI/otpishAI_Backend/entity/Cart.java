@@ -30,10 +30,17 @@ public class Cart {
     @Column(name="detail_r_price")
     private Long rPrice;
 
+    @Column(name="total_price")
+    private Long totalPrice;
+
     @Column(name="cart_quantity")
     private Long quantity;
 
     @Column(name="product_code")
     private String productCode;
+
+    @Column(name="product_num")
+    private Long productNum;
+
 
 }

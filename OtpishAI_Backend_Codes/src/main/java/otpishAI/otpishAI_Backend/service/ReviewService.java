@@ -9,6 +9,7 @@ import otpishAI.otpishAI_Backend.repository.ReviewRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +21,12 @@ public class ReviewService {
         return reviewRepository.findAllByProductNumOrderByReviewNum(productNum);
     }
 
+    public List<ReviewDTO> reviewsByReviewOwner(String reviewOwner){
+        List<Review> reviews = reviewRepository.findAllByReviewOwner(reviewOwner);
+        List<ReviewDTO> reviewDTOS = reviews.stream().map(review-> new ReviewDTO(review)).collect(Collectors.toList());
+
+        return reviewDTOS;
+    }
     public Boolean saveReview(ReviewDTO reviewDTO, String email){
         try {
             Review review;
@@ -53,6 +60,7 @@ public class ReviewService {
             reviewRepository.deleteByReviewNum(reviewNum);
             return true;
         }catch (DataAccessException e){
+            e.printStackTrace();
             return false;
         }
 
@@ -68,6 +76,7 @@ public class ReviewService {
                 return false;
             }
         } catch (DataAccessException e){
+            e.printStackTrace();
             return false;
         }
 

@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
    List<Review> findAllByProductNumOrderByReviewNum(Long productNum);
+
+   List<Review> findAllByReviewOwner(String reviewOwner);
    Review findByReviewNum(Long reviewNum);
    @Transactional
    @Modifying(clearAutomatically = true)

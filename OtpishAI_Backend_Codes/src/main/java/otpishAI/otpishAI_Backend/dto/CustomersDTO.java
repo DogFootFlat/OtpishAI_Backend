@@ -34,6 +34,8 @@ public class CustomersDTO {
     private Boolean is_secessioned;
     private Long age;
 
+    private LocalDateTime registerDate;
+
     public CustomersDTO (Customers customers){
         super();
         email = customers.getEmail();
@@ -48,6 +50,7 @@ public class CustomersDTO {
         nickname = customers.getNickname();
         profile_img = customers.getProfile_img();
         preferGenre = customers.getPreferGenre();
+        registerDate = customers.getRegisterDate();
     }
 
 }

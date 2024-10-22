@@ -19,6 +19,7 @@ import otpishAI.otpishAI_Backend.service.ProductService;
 import otpishAI.otpishAI_Backend.service.RefreshTCheckService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -35,17 +36,18 @@ public class CartController {
 
     private final ProductService productService;
 
-    @PostMapping("/addCart/{productCode}")
-    public ResponseEntity<?> addCart(HttpServletRequest request, HttpServletResponse response, @PathVariable("productCode") String productCode){
+    @PostMapping("/cart/add/{productNum}")
+    public ResponseEntity<?> addCart(HttpServletRequest request, HttpServletResponse response, @PathVariable("productNum") Long productNum){
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
 
         if(!refresh.equals(""))
         {
             //장바구니 목록 업데이트
             CustomersDTO customer = customersService.responseUser(jwtUtil.getUsername(refresh));
+            String productCode = productService.productSelectByProductNum(productNum).getProductCode();
             ProductDetail productDetail = productService.productDetailByCode(productCode);
 
-            cartService.addOrUpdateCart(customer.getUsername(), productDetail, productCode);
+            cartService.addOrUpdateCart(customer.getUsername(), productDetail);
 
             CartResponseDTO cartResponseDTO = cartService.cartsByUsername(customer.getUsername());
 
@@ -58,8 +60,8 @@ public class CartController {
 
     }
 
-    @PostMapping("/addCartDetail/{productCode}/{productDetailCode}")
-    public ResponseEntity<?> addDetailCart(HttpServletRequest request, HttpServletResponse response, @PathVariable("productCode") String productCode, @PathVariable("productDetailCode") String productDetailCode){
+    @PostMapping("/cart/add/detail/{productDetailCode}")
+    public ResponseEntity<?> addDetailCart(HttpServletRequest request, HttpServletResponse response, @PathVariable("productDetailCode") String productDetailCode){
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
 
         if(!refresh.equals(""))
@@ -67,7 +69,7 @@ public class CartController {
             //장바구니 목록 업데이트
             CustomersDTO customer = customersService.responseUser(jwtUtil.getUsername(refresh));
             ProductDetail productDetail = productService.productDetailByDetailCode(productDetailCode);
-            cartService.addOrUpdateCart(customer.getUsername(), productDetail, productCode);
+            cartService.addOrUpdateCart(customer.getUsername(), productDetail);
 
             CartResponseDTO cartResponseDTO = cartService.cartsByUsername(customer.getUsername());
 
@@ -80,7 +82,7 @@ public class CartController {
 
     }
 
-    @GetMapping("/cartList")
+    @GetMapping("/cart/list")
     public ResponseEntity<?> cartList(HttpServletRequest request, HttpServletResponse response) {
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
 
@@ -98,7 +100,7 @@ public class CartController {
     }
 
 
-    @PostMapping("/minusCart/{cartNum}")
+    @PostMapping("/cart/minus/{cartNum}")
     public ResponseEntity<?> minusCart(@PathVariable("cartNum") Long cartNum, HttpServletRequest request, HttpServletResponse response)
     {
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
@@ -122,7 +124,7 @@ public class CartController {
     }
 
 
-    @DeleteMapping("/deleteCart/{cartNum}")
+    @DeleteMapping("/cart/delete/{cartNum}")
     public ResponseEntity<?> deleteCart(@PathVariable("cartNum") Long cartNum, HttpServletRequest request, HttpServletResponse response)
     {
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
@@ -146,7 +148,7 @@ public class CartController {
     }
 
 
-    @PostMapping("/plusCart/{cartNum}")
+    @PostMapping("/cart/plus/{cartNum}")
     public ResponseEntity<?> plusCart(@PathVariable("cartNum") Long cartNum, HttpServletRequest request, HttpServletResponse response)
     {
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
@@ -169,7 +171,7 @@ public class CartController {
         }
     }
 
-    @PostMapping("/syncCart")
+    @PostMapping("/cart/sync")
     public ResponseEntity<?> syncCart(HttpServletRequest request, HttpServletResponse response, @RequestBody List<String> productDetailCodes){
 
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
@@ -179,8 +181,8 @@ public class CartController {
 
             CustomersDTO customer = customersService.responseUser(jwtUtil.getUsername(refresh));
             productDetailCodes.forEach(productDetailCode->{
-                Cart cart = cartService.cartFind(productDetailCode);
-                cartService.addOrUpdateCart(customer.getUsername(), productService.productDetailByDetailCode(productDetailCode), cart.getProductCode());
+                ProductDetail productDetail = productService.productDetailByDetailCode(productDetailCode);
+                cartService.addOrUpdateCart(customer.getUsername(), productDetail);
             });
 
             CartResponseDTO cartResponseDTO = cartService.cartsByUsername(customer.getUsername());

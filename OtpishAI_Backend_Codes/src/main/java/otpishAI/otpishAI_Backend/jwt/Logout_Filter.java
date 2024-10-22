@@ -101,10 +101,6 @@ public class Logout_Filter extends GenericFilterBean {
         //리프레시 토큰 DB에서 삭제
         tokenrefreshRepository.deleteByUsername(jwtUtil.getUsername(jwtUtil.getUsername(access)));
 
-        //리프레시 토큰 쿠키값 제거
-        Cookie deleteRefreshTokenCookie = cookieService.deleteCookie("refresh");
-
-        response.addCookie(deleteRefreshTokenCookie);
         
         //엑세스 토큰 쿠키값 제거
         Cookie deleteAccessTokenCookie = cookieService.deleteCookie("access");

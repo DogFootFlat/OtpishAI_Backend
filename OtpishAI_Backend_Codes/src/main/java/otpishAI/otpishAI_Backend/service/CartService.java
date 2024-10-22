@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 public class CartService {
     private final CartRepository cartRepository;
 
-    public void addOrUpdateCart(String username, ProductDetail productDetail, String productCode){
+    public void addOrUpdateCart(String username, ProductDetail productDetail){
         Optional<Cart> existCart = cartRepository.findByUsernameAndDetailCode(username, productDetail.getDetailCode());
 
         if(existCart.isPresent()){
             Cart updateCart = existCart.get();
+            updateCart.setTotalPrice(updateCart.getTotalPrice() + updateCart.getRPrice());
             updateCart.setQuantity(updateCart.getQuantity() + 1L);
             cartRepository.save(updateCart);
         } else {
@@ -31,8 +32,10 @@ public class CartService {
             newCart.setDetailCode(productDetail.getDetailCode());
             newCart.setOPrice(productDetail.getOPrice());
             newCart.setRPrice(productDetail.getRPrice());
+            newCart.setTotalPrice(productDetail.getRPrice());
             newCart.setQuantity(1L);
-            newCart.setProductCode(productCode);
+            newCart.setProductCode(productDetail.getProductCode());
+            newCart.setProductNum(productDetail.getProductNum());
             cartRepository.save(newCart);
         }
     }
@@ -47,6 +50,7 @@ public class CartService {
                 cartRepository.deleteByCartNum(cartNum);
             }
             else{
+                cart.setTotalPrice(cart.getTotalPrice() - cart.getRPrice());
                 cart.setQuantity(cart.getQuantity() - 1L);
                 cartRepository.save(cart);
             }
@@ -77,6 +81,7 @@ public class CartService {
             if(cart == null){
                 return false;
             }
+            cart.setTotalPrice(cart.getTotalPrice() + cart.getRPrice());
             cart.setQuantity(cart.getQuantity() + 1L);
             cartRepository.save(cart);
             return true;
@@ -98,9 +103,11 @@ public class CartService {
         return cartResponseDTO;
     }
 
-    public Cart cartFind(String detailCode){
-        return cartRepository.findByDetailCode(detailCode);
+    public Cart cartFind(String username, String detailCode){
+        return cartRepository.findByDetailCodeAndUsername(detailCode, username);
     }
+
+
 
 
 }
