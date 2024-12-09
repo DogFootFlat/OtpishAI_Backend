@@ -29,7 +29,6 @@ public class Customers {
 
     private String role;
 
-    private String addr;
     private String nickname;
     private LocalDateTime birth;
     private String phone;

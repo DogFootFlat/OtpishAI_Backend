@@ -36,7 +36,13 @@ public class JWTFilter extends OncePerRequestFilter {
 
         String servletReqUrl = request.getServletPath();
 
-        if(servletReqUrl.contains("product") || servletReqUrl.contains("refresh") || servletReqUrl.contains("signin") || servletReqUrl.contains("product_detail") || servletReqUrl.contains("healthCheck") )
+        // /seller 경로로 시작하는 요청은 필터를 통과시킴
+        if (servletReqUrl.startsWith("/seller")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if(servletReqUrl.contains("product") || servletReqUrl.contains("refresh") || servletReqUrl.contains("signin") || servletReqUrl.contains("product_detail") || servletReqUrl.contains("healthCheck") || servletReqUrl.contains("search") || servletReqUrl.contains("api"))
         {
             response.setStatus(HttpServletResponse.SC_OK);
             filterChain.doFilter(request, response);

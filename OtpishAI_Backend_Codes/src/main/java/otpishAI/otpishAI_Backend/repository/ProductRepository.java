@@ -9,9 +9,10 @@ import otpishAI.otpishAI_Backend.entity.Product;
 
 import java.util.List;
 
-public interface ProductRepository extends JpaRepository<Product, String> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Page<Product> findAllByOrderByPaymentDesc(Pageable pageable);
+    Product[] findAllByProductRegistrant(String sellerId);
     Product findByProductNum(Long productNum);
     @Query(value = "SELECT * FROM product p WHERE p.product_num IN :productNums", nativeQuery = true)
     List<Product> findProductsByProductNums(@Param("productNums") Long[] productNums);

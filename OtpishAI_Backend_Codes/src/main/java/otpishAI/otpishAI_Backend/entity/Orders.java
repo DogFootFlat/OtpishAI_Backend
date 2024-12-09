@@ -75,4 +75,15 @@ public class Orders {
     private LocalDateTime arrivalDate;
 
 
+    // 결제 관련 필드 추가
+    @Column(name="imp_uid", unique = true)
+    private String impUid; // PortOne의 고유 결제 ID
+
+    @Column(name="payment_status")
+    private String paymentStatus; // 결제 상태 (예: "paid", "failed")
+
+    @Column(name="payment_date")
+    private LocalDateTime paymentDate; // 결제 완료 날짜
+
+
 }

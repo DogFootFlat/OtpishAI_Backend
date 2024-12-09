@@ -28,14 +28,28 @@ public class WishlistService {
             wishlistRepository.save(newWishlist);
             List<Product> products = productRepository.findProductsByProductNums(productNums);
             WishlistDTO wishlistDTO = new WishlistDTO(newWishlist, products);
+
+            Product product = productRepository.findByProductNum(productNum);
+            if(product != null){
+                product.setFavorite(product.getFavorite() + 1L);
+                productRepository.save(product);
+            }
             return wishlistDTO;
         }
         else{
             Boolean exist = wishlistRepository.existsProductNumInWishlist(username, productNum);
             if(exist){
+
+                Product product = productRepository.findByProductNum(productNum);
+                if(product != null){
+                    product.setFavorite(product.getFavorite() - 1L);
+                    productRepository.save(product);
+                }
+
                 wishlistRepository.removeProductNum(username, productNum);
                 Wishlist updatedWishlist = wishlistRepository.findByWishOwner(username);
                 if(updatedWishlist.getProductNum().length == 0 || updatedWishlist.getProductNum() == null){
+
                     wishlistRepository.deleteByWishOwner(username);
                     return new WishlistDTO();
                 }
@@ -48,6 +62,12 @@ public class WishlistService {
                 Wishlist updatedWishlist = wishlistRepository.findByWishOwner(username);
                 List<Product> products = productRepository.findProductsByProductNums(updatedWishlist.getProductNum());
                 WishlistDTO wishlistDTO = new WishlistDTO(updatedWishlist, products);
+
+                Product product = productRepository.findByProductNum(productNum);
+                if(product != null){
+                    product.setFavorite(product.getFavorite() + 1L);
+                    productRepository.save(product);
+                }
                 return wishlistDTO;
             }
         }

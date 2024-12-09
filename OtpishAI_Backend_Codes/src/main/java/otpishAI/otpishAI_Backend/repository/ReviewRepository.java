@@ -16,4 +16,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
    @Modifying(clearAutomatically = true)
    void deleteByReviewNum(Long productNum);
 
+   Long countByProductNum(Long productNum);
+
 }

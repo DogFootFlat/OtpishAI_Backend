@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import otpishAI.otpishAI_Backend.entity.Customers;
+import otpishAI.otpishAI_Backend.entity.CustomersAddr;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CustomersDTO {
 
+    //사용자의 정보들(Customers 테이블에서 참조한 값들)
     private String email;
 
     private String username;
@@ -21,7 +23,6 @@ public class CustomersDTO {
 
     private String role;
 
-    private String addr;
     private String nickname;
     private LocalDateTime birth;
     private String phone;
@@ -36,10 +37,14 @@ public class CustomersDTO {
 
     private LocalDateTime registerDate;
 
-    public CustomersDTO (Customers customers){
+    //사용자의 주소 목록(Customers_addr 테이블에서 참조한 값)
+    private String[] addrs;
+    //사용자의 대표 주소(Customers_addr 테이블에서 참조한 값)
+    private String mainAddr;
+
+    public CustomersDTO (Customers customers, CustomersAddr customersAddr){
         super();
         email = customers.getEmail();
-        addr = customers.getAddr();
         name = customers.getName();
         role = customers.getRole();
         age = customers.getAge();
@@ -51,6 +56,8 @@ public class CustomersDTO {
         profile_img = customers.getProfile_img();
         preferGenre = customers.getPreferGenre();
         registerDate = customers.getRegisterDate();
+        addrs = customersAddr.getAddrs();
+        mainAddr = customersAddr.getMainAddr();
     }
 
 }

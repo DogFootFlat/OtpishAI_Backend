@@ -1,12 +1,12 @@
 package otpishAI.otpishAI_Backend.config;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
-import otpishAI.otpishAI_Backend.jwt.JWTFilter;
-import otpishAI.otpishAI_Backend.jwt.JWTUtil;
-import otpishAI.otpishAI_Backend.jwt.Logout_Filter;
+import otpishAI.otpishAI_Backend.jwt.*;
 import otpishAI.otpishAI_Backend.oAuth2.FailureFilter;
 import otpishAI.otpishAI_Backend.oAuth2.SuccessHandler;
+import otpishAI.otpishAI_Backend.repository.SellerRepository;
 import otpishAI.otpishAI_Backend.repository.TokenrefreshRepository;
 import otpishAI.otpishAI_Backend.service.CookieService;
 import otpishAI.otpishAI_Backend.service.OAuth2_UserService;
@@ -30,6 +30,11 @@ import java.util.Collections;
 @AllArgsConstructor
 public class SecurityConfig {
 
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
 
     private final OAuth2_UserService customOAuth2UserService;
 
@@ -45,6 +50,7 @@ public class SecurityConfig {
 
     private final RefreshTCheckService refreshTCheckService;
 
+    private final SellerRepository sellerRepository;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -80,35 +86,30 @@ public class SecurityConfig {
         http
                 .httpBasic((auth) -> auth.disable());
 
-        //oauth2 설정
-        http
-                .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService))
-                        .successHandler(customSuccessHandler)
-                        .failureHandler(failureFilter)
-                );
 
-        //경로별 인가 작업
-        http
-                .authorizeRequests((auth) -> auth
-                        .requestMatchers("/refresh/**").permitAll()
-                        .requestMatchers("/product/**").permitAll()
-                        .requestMatchers("/signin/**").permitAll()
-                        .requestMatchers("/product_detail/**").permitAll()
-                        .requestMatchers("/healthCheck").permitAll()
-                        .anyRequest().authenticated());
+        // OAuth2 설정 (사용자용)
+        http.oauth2Login(oauth2 -> oauth2
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                        .userService(customOAuth2UserService))
+                .successHandler(customSuccessHandler)
+                .failureHandler(failureFilter)
+        );
 
+        // 권한 및 경로 설정
+        http.authorizeRequests(auth -> auth
+                .requestMatchers("/refresh/**", "/product/**", "/signin/**", "/product_detail/**", "/healthCheck", "/search", "/seller/login", "/seller/register", "api/judge").permitAll()
+                .requestMatchers("/seller/**").hasRole("SELLER")
+                .anyRequest().authenticated()
+        );
 
-        //JWTFilter 및 Logout_Filter 추가
-        http
-                .addFilterAfter(new JWTFilter(jwtUtil, refreshTCheckService, tokenrefreshRepository, cookieService), OAuth2LoginAuthenticationFilter.class)
-                .addFilterBefore(new Logout_Filter(jwtUtil, tokenrefreshRepository, cookieService), LogoutFilter.class);
-        //세션 설정(세션 유지 x)
-        http
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // 필터 설정 (필터 체인 순서 변경)
+        http.addFilterAfter(new JWTFilter(jwtUtil, refreshTCheckService, tokenrefreshRepository, cookieService), OAuth2LoginAuthenticationFilter.class)
+                .addFilterBefore(new SellerJWTFilter(jwtUtil, sellerRepository, cookieService, tokenrefreshRepository), JWTFilter.class)
+                .addFilterBefore(new Logout_Filter(jwtUtil, tokenrefreshRepository, cookieService), SellerJWTFilter.class)
+                .addFilterBefore(new SellerLogoutFilter(jwtUtil, tokenrefreshRepository, cookieService), Logout_Filter.class);
 
+        // 세션 설정 (세션 사용 안함)
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

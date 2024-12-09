@@ -7,6 +7,8 @@ import otpishAI.otpishAI_Backend.dto.OAuth2Response;
 import otpishAI.otpishAI_Backend.dto.OAuth2_User;
 import otpishAI.otpishAI_Backend.dto.OAuth2_CustomersDTO;
 import otpishAI.otpishAI_Backend.entity.Customers;
+import otpishAI.otpishAI_Backend.entity.CustomersAddr;
+import otpishAI.otpishAI_Backend.repository.CustomersAddrRepository;
 import otpishAI.otpishAI_Backend.repository.CustomersRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class OAuth2_UserService extends DefaultOAuth2UserService {
 
     private final CustomersRepository customersRepository;
+    private final CustomersAddrRepository customersAddrRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -56,6 +59,11 @@ public class OAuth2_UserService extends DefaultOAuth2UserService {
             OAuth2CustomersDTO.setUsername(username);
             OAuth2CustomersDTO.setName(oAuth2Response.getName());
             OAuth2CustomersDTO.setRole("ROLE_USER");
+
+            CustomersAddr customersAddr = new CustomersAddr();
+            customersAddr.setAddrOwner(username);
+
+            customersAddrRepository.save(customersAddr);
 
             return new OAuth2_User(OAuth2CustomersDTO);
         }

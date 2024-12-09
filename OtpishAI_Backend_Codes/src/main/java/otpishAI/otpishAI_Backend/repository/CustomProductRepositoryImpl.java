@@ -24,11 +24,11 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         StringBuilder sqlBuilderFTC = new StringBuilder();
 
         // 기본 SELECT 문
-        sqlBuilder.append("SELECT * FROM otpishai_schema.product WHERE 1 = 1");
-        sqlBuilderFTC.append("SELECT COUNT(*) FROM otpishai_schema.product WHERE 1 = 1");
+        sqlBuilder.append("SELECT * FROM otpishai_schema.product WHERE is_deleted = 0 and 1 = 1");
+        sqlBuilderFTC.append("SELECT COUNT(*) FROM otpishai_schema.product WHERE is_deleted = 0 and 1 = 1");
 
-        sqlBuilder.append(" AND genre_code LIKE '%").append(genre).append("%'");
-        sqlBuilderFTC.append(" AND genre_code LIKE '%").append(genre).append("%'");
+        sqlBuilder.append(" AND genre_code ILIKE '%").append(genre).append("%'");
+        sqlBuilderFTC.append(" AND genre_code ILIKE '%").append(genre).append("%'");
 
         // 나머지 조건들을 OR 또는 AND로 묶기
         StringBuilder otherConditions = new StringBuilder();
@@ -36,34 +36,34 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         String connector = isSearch ? " OR " : " AND ";
 
         if (!productName.equals("")) {
-            if (otherConditions.length() > 0) {
+            if (!otherConditions.isEmpty()) {
                 otherConditions.append(connector);
                 otherConditionsFTC.append(connector);
             }
-            otherConditions.append("product_name LIKE '%").append(productName).append("%'");
-            otherConditionsFTC.append("product_name LIKE '%").append(productName).append("%'");
+            otherConditions.append("product_name ILIKE '%").append(productName).append("%'");
+            otherConditionsFTC.append("product_name ILIKE '%").append(productName).append("%'");
         }
 
         if (!productCode.equals("")) {
-            if (otherConditions.length() > 0) {
+            if (!otherConditions.isEmpty()) {
                 otherConditions.append(connector);
                 otherConditionsFTC.append(connector);
             }
-            otherConditions.append("product_code LIKE '%").append(productCode).append("%'");
-            otherConditionsFTC.append("product_code LIKE '%").append(productCode).append("%'");
+            otherConditions.append("product_code ILIKE '%").append(productCode).append("%'");
+            otherConditionsFTC.append("product_code ILIKE '%").append(productCode).append("%'");
         }
 
         if (!productRegistrant.equals("")) {
-            if (otherConditions.length() > 0) {
+            if (!otherConditions.isEmpty()) {
                 otherConditions.append(connector);
                 otherConditionsFTC.append(connector);
             }
-            otherConditions.append("product_registrant LIKE '%").append(productRegistrant).append("%'");
-            otherConditionsFTC.append("product_registrant LIKE '%").append(productRegistrant).append("%'");
+            otherConditions.append("product_registrant ILIKE '%").append(productRegistrant).append("%'");
+            otherConditionsFTC.append("product_registrant ILIKE '%").append(productRegistrant).append("%'");
         }
 
         if (!brand.isEmpty() && !brand.get(0).equals("")) {
-            if (otherConditions.length() > 0) {
+            if (!otherConditions.isEmpty()) {
                 otherConditions.append(connector);
                 otherConditionsFTC.append(connector);
             }
@@ -74,15 +74,15 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                     otherConditions.append(" OR ");
                     otherConditionsFTC.append(" OR ");
                 }
-                otherConditions.append("product_brand LIKE '%").append(brand.get(i)).append("%'");
-                otherConditionsFTC.append("product_brand LIKE '%").append(brand.get(i)).append("%'");
+                otherConditions.append("product_brand ILIKE '%").append(brand.get(i)).append("%'");
+                otherConditionsFTC.append("product_brand ILIKE '%").append(brand.get(i)).append("%'");
             }
             otherConditions.append(")");
             otherConditionsFTC.append(")");
         }
 
         if (!category.isEmpty() && !category.get(0).equals("")) {
-            if (otherConditions.length() > 0) {
+            if (!otherConditions.isEmpty()) {
                 otherConditions.append(connector);
                 otherConditionsFTC.append(connector);
             }
@@ -93,18 +93,18 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                     otherConditions.append(" OR ");
                     otherConditionsFTC.append(" OR ");
                 }
-                otherConditions.append("array_to_string(category, ',') LIKE '%").append(category.get(i)).append("%'");
-                otherConditionsFTC.append("array_to_string(category, ',') LIKE '%").append(category.get(i)).append("%'");
+                otherConditions.append("array_to_string(category, ',') ILIKE '%").append(category.get(i)).append("%'");
+                otherConditionsFTC.append("array_to_string(category, ',') ILIKE '%").append(category.get(i)).append("%'");
             }
             otherConditions.append(")");
             otherConditionsFTC.append(")");
         }
 
         // isSearch가 true이면 다른 조건들을 OR로 묶어야 하므로 괄호로 묶기
-        if (isSearch && otherConditions.length() > 0) {
+        if (isSearch && !otherConditions.isEmpty()) {
             sqlBuilder.append(" AND (").append(otherConditions).append(")");
             sqlBuilderFTC.append(" AND (").append(otherConditionsFTC).append(")");
-        } else if (otherConditions.length() > 0) {
+        } else if (!otherConditions.isEmpty()) {
             sqlBuilder.append(" AND ").append(otherConditions);
             sqlBuilderFTC.append(" AND ").append(otherConditionsFTC);
         }

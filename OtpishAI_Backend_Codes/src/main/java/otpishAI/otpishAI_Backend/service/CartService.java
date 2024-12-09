@@ -18,13 +18,13 @@ import java.util.stream.Collectors;
 public class CartService {
     private final CartRepository cartRepository;
 
-    public void addOrUpdateCart(String username, ProductDetail productDetail){
+    public void addOrUpdateCart(String username, ProductDetail productDetail, Long productQuantity){
         Optional<Cart> existCart = cartRepository.findByUsernameAndDetailCode(username, productDetail.getDetailCode());
 
         if(existCart.isPresent()){
             Cart updateCart = existCart.get();
             updateCart.setTotalPrice(updateCart.getTotalPrice() + updateCart.getRPrice());
-            updateCart.setQuantity(updateCart.getQuantity() + 1L);
+            updateCart.setQuantity(updateCart.getQuantity() + productQuantity);
             cartRepository.save(updateCart);
         } else {
             Cart newCart= new Cart();
@@ -33,7 +33,7 @@ public class CartService {
             newCart.setOPrice(productDetail.getOPrice());
             newCart.setRPrice(productDetail.getRPrice());
             newCart.setTotalPrice(productDetail.getRPrice());
-            newCart.setQuantity(1L);
+            newCart.setQuantity(productQuantity);
             newCart.setProductCode(productDetail.getProductCode());
             newCart.setProductNum(productDetail.getProductNum());
             cartRepository.save(newCart);

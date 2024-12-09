@@ -14,7 +14,9 @@ import otpishAI.otpishAI_Backend.dto.CustomersDTO;
 import otpishAI.otpishAI_Backend.dto.OrdersDTO;
 import otpishAI.otpishAI_Backend.dto.ReviewDTO;
 import otpishAI.otpishAI_Backend.dto.WishlistDTO;
+import otpishAI.otpishAI_Backend.entity.Product;
 import otpishAI.otpishAI_Backend.jwt.JWTUtil;
+import otpishAI.otpishAI_Backend.repository.ProductRepository;
 import otpishAI.otpishAI_Backend.service.*;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class WishlistController {
     private final WishlistService wishlistService;
 
 
+
     @PostMapping("/wishlist/update/{productNum}")
     public ResponseEntity<?> updateWishlist(@PathVariable("productNum") Long productNum, HttpServletRequest request, HttpServletResponse response){
         String refresh =refreshTCheckService.RefreshTCheck(request, response);
@@ -43,6 +46,7 @@ public class WishlistController {
             CustomersDTO customer = customersService.responseUser(jwtUtil.getUsername(refresh));
             wishlistService.addOrDeleteWishlist(customer.getUsername(), productNum);
             WishlistDTO wishlistDTO = wishlistService.wishlistList(customer.getUsername());
+
 
             //유저 정보 반환
             return new ResponseEntity<>(wishlistDTO, HttpStatus.OK);
